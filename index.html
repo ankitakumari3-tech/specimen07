@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Plant With No Name</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B2733; --ink2:#3C5C63; --mint:#EAF7F3; --em:#0E8F65; --teal:#11A69A; --gold:#E2A93B; --gold2:#FFC857; --vio:#7B5CE6; --paper:#FFFFFF;
+  --u:4px; color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --ink:#0B2733; } }
+:root[data-theme="dark"]{ --ink:#0B2733; }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:#CFE7E1;color:var(--ink);font-family:'Sora',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;display:flex;align-items:center;justify-content:center;overflow:hidden;-webkit-tap-highlight-color:transparent}
+#stage{position:relative;overflow:hidden;background:#E3F3EF;width:360px;height:640px}
+#stage>*{position:absolute;inset:0}
+#camwrap{z-index:1}
+#world,#ov{width:100%;height:100%;display:block}
+#fx{z-index:2;pointer-events:none;width:100%;height:100%}
+#ov{z-index:3;opacity:0;transition:opacity .8s ease;pointer-events:none}
+#vig{z-index:4;pointer-events:none;background:radial-gradient(ellipse 80% 65% at 50% 42%,transparent 60%,rgba(20,70,70,.18) 100%)}
+#black{z-index:5;background:#000;opacity:0;pointer-events:none}
+#sweep{z-index:5;pointer-events:none;opacity:0;background:linear-gradient(180deg,transparent 0,rgba(17,166,154,0) 40%,rgba(17,166,154,.45) 50%,rgba(17,166,154,0) 60%,transparent 100%);background-size:100% 40%;background-repeat:no-repeat}
+#sweep.go{animation:sweep 1.8s ease-in-out forwards}
+@keyframes sweep{0%{opacity:1;background-position:0 -60%}90%{opacity:1}100%{opacity:0;background-position:0 160%}}
+/* ---- centre titles: always inside a readable box ---- */
+#titles{z-index:6;display:flex;align-items:center;justify-content:center;padding:0 calc(var(--u)*6);pointer-events:none}
+.tw{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*2.4);text-align:center;padding:calc(var(--u)*5) calc(var(--u)*5);border-radius:calc(var(--u)*5);background:rgba(7,24,36,.82);color:#fff;box-shadow:0 18px 50px rgba(0,30,40,.3);transition:opacity .5s}
+.tw:empty{opacity:0;padding:0}
+.tl{opacity:0;transform:translateY(calc(var(--u)*1.4));filter:blur(6px);transition:opacity .7s ease,transform .9s cubic-bezier(.2,.7,.2,1),filter .8s ease;font-weight:700;letter-spacing:.06em;line-height:1.18}
+.tl.on,.tl.typed{opacity:1;transform:none;filter:none}
+.typed::after{content:"";display:inline-block;width:.45em;height:.08em;margin-left:.12em;background:currentColor;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.t-lab{font-size:calc(var(--u)*5);color:#6FF0DF;letter-spacing:.18em;font-weight:600}
+.t-big{font-size:calc(var(--u)*8);color:#fff}
+.t-mid{font-size:calc(var(--u)*6.4);color:#fff;letter-spacing:.08em}
+.t-huge{font-size:calc(var(--u)*16);font-weight:800}
+.t-warn{font-size:calc(var(--u)*5.2);color:#FF7A85;letter-spacing:.12em}
+.t-sub{font-size:calc(var(--u)*4.8);font-weight:400;letter-spacing:0;color:#E4F7F3;line-height:1.4}
+.gold{color:#FFD27A}
+.chap{font-size:calc(var(--u)*8.6);font-weight:800;letter-spacing:.05em;line-height:1.12;color:#FFD27A}
+.chap span{display:inline-block;opacity:0;filter:blur(8px);transform:translateY(.25em);transition:opacity .9s ease,filter 1s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.chap.on span{opacity:1;filter:none;transform:none}
+/* ---- one caption zone at the bottom ---- */
+#cap{z-index:7;inset:auto;left:4%;right:4%;bottom:calc(var(--u)*4);background:rgba(255,255,255,.95);color:var(--ink);border-radius:calc(var(--u)*4.5);padding:calc(var(--u)*3.4) calc(var(--u)*4.4);font-size:calc(var(--u)*5);line-height:1.38;font-weight:600;box-shadow:0 10px 34px rgba(10,60,60,.22);border-left:calc(var(--u)*1.4) solid var(--teal);opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .4s ease;pointer-events:none}
+#cap.on{opacity:1;transform:none}
+#cap .ch{display:block;font-size:calc(var(--u)*3.7);font-weight:800;letter-spacing:.14em;color:var(--em);margin-bottom:calc(var(--u)*.8)}
+/* ---- HUD ---- */
+#hud{z-index:9;inset:auto;top:0;left:0;right:0;padding:calc(var(--u)*3) calc(var(--u)*4);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.55));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .6s;pointer-events:none}
+#hud.on{opacity:1}
+#hud .h1{font-size:calc(var(--u)*3.6);letter-spacing:.18em;color:var(--em);font-weight:800}
+#hud .h2{font-size:calc(var(--u)*3.2);color:var(--ink2);margin-top:calc(var(--u)*.4)}
+#hud .hr{display:flex;gap:calc(var(--u)*1.6);pointer-events:auto}
+.pill{white-space:nowrap;font:inherit;font-size:calc(var(--u)*3.3);font-weight:600;color:var(--ink);background:#fff;border:1.5px solid rgba(17,166,154,.45);border-radius:99px;padding:calc(var(--u)*1.3) calc(var(--u)*2.6);cursor:pointer}
+.pill[aria-pressed="false"]{opacity:.5;text-decoration:line-through}
+.pill.ev{color:var(--gold2);border-color:rgba(226,169,59,.7)}
+#camtag{z-index:8;inset:auto;top:calc(var(--u)*14.5);left:calc(var(--u)*4);font-size:calc(var(--u)*3.8);font-weight:700;letter-spacing:.14em;color:#fff;background:rgba(7,24,36,.75);border-radius:99px;padding:calc(var(--u)*1.2) calc(var(--u)*3);opacity:0;transition:opacity .3s;pointer-events:none;display:flex;align-items:center;gap:calc(var(--u)*1.6)}
+#camtag i{width:calc(var(--u)*2.2);height:calc(var(--u)*2.2);border-radius:50%;background:#FF5D73;animation:blink 1.2s steps(1) infinite}
+/* ---- scanner ---- */
+#scan{z-index:9;inset:auto;top:calc(var(--u)*14);right:calc(var(--u)*4);font:inherit;font-size:calc(var(--u)*4.2);font-weight:800;color:#3A2700;background:linear-gradient(90deg,#FFD27A,#FFB547);border:0;border-radius:99px;padding:calc(var(--u)*2.4) calc(var(--u)*4);box-shadow:0 0 0 0 rgba(255,181,71,.7);cursor:pointer;opacity:0;transform:scale(.8);pointer-events:none;transition:opacity .3s,transform .3s}
+#scan.on{opacity:1;transform:scale(1);pointer-events:auto;animation:ping 1.6s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(255,181,71,.75)}80%{box-shadow:0 0 0 calc(var(--u)*5) rgba(255,181,71,0)}100%{box-shadow:0 0 0 0 rgba(255,181,71,0)}}
+#spark{z-index:8;inset:auto;width:60px;height:60px;border-radius:50%;border:4px solid #FFB547;box-shadow:0 0 0 4px rgba(255,255,255,.9),0 0 30px #FFB547;display:none;cursor:pointer;background:rgba(255,210,122,.18)}
+#spark.on{display:block;animation:sp 1s ease-in-out infinite}
+#spark::after{content:"✦";position:absolute;left:50%;top:-1.1em;transform:translateX(-50%);color:#FFB547;font-size:calc(var(--u)*7);text-shadow:0 0 10px #fff}
+@keyframes sp{50%{transform:scale(1.15)}}
+#toast{z-index:10;inset:auto;top:calc(var(--u)*25);left:5%;right:5%;pointer-events:none;opacity:0;transform:translateY(-8px);transition:opacity .4s,transform .4s}
+#toast.on{opacity:1;transform:none}
+#toast div{background:#FFF8E8;border:2px solid var(--gold);color:var(--ink);border-radius:calc(var(--u)*4);padding:calc(var(--u)*3) calc(var(--u)*4);font-size:calc(var(--u)*4);line-height:1.4;box-shadow:0 12px 30px rgba(120,80,0,.2)}
+#toast b{display:block;color:var(--gold2);font-size:calc(var(--u)*4.6);margin-bottom:calc(var(--u)*.6)}
+/* ---- interactive layer ---- */
+#ui{z-index:8;pointer-events:none}
+#ui *{pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.97);border-radius:calc(var(--u)*6) calc(var(--u)*6) 0 0;padding:calc(var(--u)*5) calc(var(--u)*5) calc(var(--u)*6);box-shadow:0 -12px 40px rgba(10,60,60,.2);opacity:0;transform:translateY(30px);transition:opacity .5s,transform .6s cubic-bezier(.2,.7,.2,1);max-height:62%;overflow:auto}
+.sheet.on{opacity:1;transform:none}
+.cq{font-size:calc(var(--u)*6.2);font-weight:800;letter-spacing:.04em;text-align:center}
+.cs{font-size:calc(var(--u)*4.2);text-align:center;color:var(--ink2);margin:calc(var(--u)*1.2) 0 calc(var(--u)*3.6)}
+.cfb{min-height:calc(var(--u)*5);font-size:calc(var(--u)*4.2);text-align:center;color:#B4532A;font-weight:600;margin-top:calc(var(--u)*2)}
+.opts{display:flex;flex-direction:column;gap:calc(var(--u)*2.4)}
+.opt{display:flex;align-items:center;gap:calc(var(--u)*4);padding:calc(var(--u)*2.2) calc(var(--u)*3.6);border-radius:calc(var(--u)*4);background:var(--mint);border:2px solid rgba(17,166,154,.35);color:var(--ink);font:inherit;font-size:calc(var(--u)*5);font-weight:700;text-align:left;cursor:pointer;transition:border-color .3s,box-shadow .3s,opacity .3s,transform .15s}
+.opt:active{transform:scale(.98)}
+.opt:focus-visible,.btn:focus-visible,.pill:focus-visible,#scan:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.opt .oi{flex:0 0 auto;width:calc(var(--u)*15);height:calc(var(--u)*15);border-radius:calc(var(--u)*3);background:#fff;padding:calc(var(--u)*1)}
+.opt .oi svg{width:100%;height:100%}
+.opt .ot b{display:block;font-size:calc(var(--u)*3.1);color:var(--teal);letter-spacing:.18em;font-weight:800;margin-bottom:calc(var(--u)*.4)}
+.opt.right{border-color:var(--gold);background:#FFF6E2;box-shadow:0 0 0 2px var(--gold)}
+.opt.wrong{opacity:.4;animation:shake .45s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.btn{width:100%;padding:calc(var(--u)*3.4);border-radius:calc(var(--u)*4);font:inherit;font-size:calc(var(--u)*4.6);font-weight:700;border:0;background:linear-gradient(90deg,#11A69A,#2FC38A);color:#fff;cursor:pointer}
+.btn.ghost{background:#fff;border:2px solid rgba(11,39,51,.2);color:var(--ink)}
+.bstack{display:flex;flex-direction:column;gap:calc(var(--u)*2.4);margin-top:calc(var(--u)*2)}
+/* concept card */
+.card{position:absolute;left:4%;right:4%;top:calc(var(--u)*14);background:rgba(255,255,255,.97);border-radius:calc(var(--u)*5);padding:calc(var(--u)*4.4) calc(var(--u)*4);box-shadow:0 18px 50px rgba(10,60,60,.25);opacity:0;transform:translateY(12px) scale(.98);transition:opacity .5s,transform .6s cubic-bezier(.2,.7,.2,1);pointer-events:none!important}
+.card.on{opacity:1;transform:none}
+.card h3{margin:0;font-size:calc(var(--u)*5.6);font-weight:800;letter-spacing:.06em;text-align:center}
+.card .k{font-size:calc(var(--u)*3.4);text-align:center;color:var(--ink2);margin:calc(var(--u)*.8) 0 calc(var(--u)*3.4)}
+.cg{display:grid;gap:calc(var(--u)*2.4)}
+.panel{text-align:center;border-radius:calc(var(--u)*3.4);padding:calc(var(--u)*2.4) calc(var(--u)*1.2);background:var(--mint);border:2px solid transparent;position:relative}
+.panel.hl{border-color:var(--gold);background:#FFF6E2}
+.panel svg{width:100%;height:auto;display:block}
+.panel b{display:block;font-size:calc(var(--u)*4);margin-top:calc(var(--u)*1.2);letter-spacing:.02em}
+.panel span{display:block;font-size:calc(var(--u)*3.3);color:var(--ink2);margin-top:calc(var(--u)*.6);line-height:1.3}
+.panel i{position:absolute;top:calc(var(--u)*-2.6);left:50%;transform:translateX(-50%);font-style:normal;font-size:calc(var(--u)*2.8);font-weight:800;background:var(--gold);color:#3A2700;border-radius:99px;padding:calc(var(--u)*.6) calc(var(--u)*2);white-space:nowrap;letter-spacing:.06em}
+.lock{position:absolute;top:calc(var(--u)*16);left:50%;transform:translateX(-50%);text-align:center;background:rgba(7,24,36,.85);color:#fff;border-radius:calc(var(--u)*5);padding:calc(var(--u)*4) calc(var(--u)*9);opacity:0;transition:opacity .7s}
+.lock.on{opacity:1}
+.lock svg{width:calc(var(--u)*14);height:calc(var(--u)*14);overflow:visible}
+.lock .shk{transition:transform .7s cubic-bezier(.3,1.6,.5,1);transform-origin:70% 100%;transform-box:fill-box}
+.lock.open .shk{transform:translateY(-14px) rotate(28deg)}
+.lk-part{font-size:calc(var(--u)*6.6);font-weight:800;letter-spacing:.14em;margin-top:calc(var(--u)*1.4)}
+.lk-state{font-size:calc(var(--u)*4);letter-spacing:.32em;color:#FFD27A;margin-top:calc(var(--u)*.6)}
+.bh{font-size:calc(var(--u)*5.2);font-weight:800}
+.bs{font-size:calc(var(--u)*3.9);color:var(--ink2);margin:calc(var(--u)*1) 0 calc(var(--u)*3.4);line-height:1.4}
+.ci{border-left:4px solid #CFE3DE;padding:calc(var(--u)*.4) 0 calc(var(--u)*.4) calc(var(--u)*3.4);margin-bottom:calc(var(--u)*3)}
+.ci.got{border-color:var(--gold)}
+.ci .cn{font-size:calc(var(--u)*4.3);font-weight:700}
+.ci.got .cn{color:var(--gold2)}
+.ci .cd{font-size:calc(var(--u)*3.8);line-height:1.45;color:var(--ink2);margin-top:calc(var(--u)*.6)}
+.idb{position:absolute;left:8%;right:8%;top:38%;text-align:center;background:rgba(7,24,36,.85);color:#fff;border-radius:calc(var(--u)*5);padding:calc(var(--u)*5);opacity:0;transition:opacity .6s}
+.idb.on{opacity:1}
+.idl{font-size:calc(var(--u)*4);letter-spacing:.24em;color:#6FF0DF;font-weight:700}
+.idv{font-size:calc(var(--u)*14);font-weight:800;margin:calc(var(--u)*1.4) 0}
+.idt{height:calc(var(--u)*1.8);background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden}
+.idt i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4FE3D1,#FFD27A)}
+#home{z-index:11;display:flex;flex-direction:column;justify-content:flex-end;padding:calc(var(--u)*7) calc(var(--u)*6) calc(var(--u)*7);background:linear-gradient(180deg,rgba(234,247,243,0) 0,rgba(234,247,243,.6) 38%,rgba(255,255,255,.97) 70%);transition:opacity .7s}
+#home.off{opacity:0;pointer-events:none}
+#home .k{font-size:calc(var(--u)*3.6);letter-spacing:.22em;color:var(--em);font-weight:800}
+#home h1{font-size:calc(var(--u)*10);line-height:1.04;margin:calc(var(--u)*2) 0 calc(var(--u)*3);font-weight:800;letter-spacing:.01em}
+#home p{font-size:calc(var(--u)*4.1);line-height:1.5;color:var(--ink2);margin:0 0 calc(var(--u)*4.4)}
+#home .parts{display:flex;flex-direction:column;gap:calc(var(--u)*2.2)}
+.pbtn{display:flex;justify-content:space-between;align-items:center;font:inherit;font-size:calc(var(--u)*4.5);font-weight:700;color:var(--ink);background:#fff;border:2px solid rgba(17,166,154,.35);border-radius:calc(var(--u)*4);padding:calc(var(--u)*3.2) calc(var(--u)*4.2);cursor:pointer;text-align:left}
+.pbtn small{display:block;font-size:calc(var(--u)*3.1);font-weight:800;color:var(--teal);letter-spacing:.18em;margin-bottom:calc(var(--u)*.4)}
+.pbtn.first{background:linear-gradient(90deg,#11A69A,#2FC38A);color:#fff;border:0}
+.pbtn.first small{color:#D9FFF6}
+.pbtn[disabled]{opacity:.45;cursor:default}
+#stage.glitch #camwrap{animation:gl .8s steps(2) both}
+@keyframes gl{0%{transform:none}15%{transform:translate(-14px,4px);filter:hue-rotate(80deg) saturate(3);clip-path:inset(10% 0 40% 0)}30%{transform:translate(18px,-6px);clip-path:inset(50% 0 8% 0);filter:invert(.3)}45%{transform:translate(-6px,0);clip-path:inset(0 0 70% 0)}60%{transform:translate(10px,8px);clip-path:inset(30% 0 30% 0);filter:hue-rotate(160deg)}80%{transform:scale(1.04);clip-path:inset(70% 0 0 0);opacity:.6}100%{opacity:0;clip-path:inset(50% 0 50% 0)}}
+.clue{pointer-events:none}
+.clue.armed{pointer-events:all;cursor:pointer}
+.pulse{animation:pls 1.4s ease-in-out infinite}
+@keyframes pls{50%{opacity:.3}}
+.fadeg{transition:opacity .9s ease}
+.pop{transform-box:fill-box;transform-origin:center;transform:scale(0);opacity:0;transition:transform .9s cubic-bezier(.2,1.4,.4,1),opacity .5s}
+.pop.on{transform:scale(1);opacity:1}
+.popl{transform-origin:left center}.popr{transform-origin:right center}
+.ly{transition:transform 2s cubic-bezier(.45,0,.2,1),opacity .7s ease}
+.grow{transition:stroke-dashoffset 3s cubic-bezier(.4,0,.2,1)}
+#world.bp #plant *{fill:rgba(143,243,255,.05)!important;stroke:#8FF3FF!important;stroke-width:1.2px!important;stroke-opacity:1!important}
+#world.bp #lab,#world.bp #chamberFx,#world.bp #glass{opacity:.12}
+#lab,#chamberFx,#glass{transition:opacity 1.2s}
+
+#cap{display:flex;gap:calc(var(--u)*3);align-items:flex-start}
+#cap .av{flex:0 0 calc(var(--u)*10);height:calc(var(--u)*10)}
+#cap .av svg{width:100%;height:100%}
+#cap .ct{flex:1;min-width:0}
+.tapme{pointer-events:none}
+.tapme.live{pointer-events:all;cursor:pointer}
+#ov .ly{pointer-events:none}
+.twin{transition:opacity .6s}
+.wilted{opacity:.22}
+.xpf{position:absolute;z-index:10;left:0;right:0;top:32%;text-align:center;font-size:calc(var(--u)*9);font-weight:800;color:#E2A93B;text-shadow:0 3px 0 #fff,0 0 24px #fff;pointer-events:none;animation:xpf 1.5s ease-out forwards}
+@keyframes xpf{0%{opacity:0;transform:translateY(20px) scale(.7)}20%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-40px)}}
+.cf{position:absolute;z-index:10;top:-4%;width:calc(var(--u)*2.2);height:calc(var(--u)*3.4);border-radius:2px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(calc(var(--u)*195)) rotate(760deg)}}
+.machine{position:absolute;left:5%;right:5%;top:calc(var(--u)*15);background:#0E2233;color:#fff;border-radius:calc(var(--u)*5);padding:calc(var(--u)*4.4);box-shadow:0 18px 50px rgba(10,40,60,.35);opacity:0;transition:opacity .5s}
+.machine.on{opacity:1}
+.machine h3{margin:0;font-size:calc(var(--u)*5);letter-spacing:.14em;color:#6FF0DF;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:calc(var(--u)*1.6);justify-content:center;margin:calc(var(--u)*3) 0}
+.chips span{font-size:calc(var(--u)*3.3);font-weight:700;background:rgba(111,240,223,.14);border:1px solid rgba(111,240,223,.5);border-radius:99px;padding:calc(var(--u)*1) calc(var(--u)*2.4)}
+.mscreen{background:#071521;border-radius:calc(var(--u)*3);padding:calc(var(--u)*3.4);min-height:calc(var(--u)*34);font-size:calc(var(--u)*4.2);line-height:1.45}
+.mscreen .spin{font-size:calc(var(--u)*5.6);font-weight:800;text-align:center;color:#FFD27A;margin-bottom:calc(var(--u)*2)}
+.mscreen .no{color:#FF8A94}.mscreen .yes{color:#7DF0B0;font-weight:800}
+.mscreen small{display:block;color:#9FB8C4;font-size:calc(var(--u)*3.5);margin-bottom:calc(var(--u)*1.6)}
+#world .dead,#world .alive{transition:opacity 1.1s ease var(--d,0s)}
+#world .alive{opacity:0}
+#world.healed .dead{opacity:0}
+#world.healed .alive{opacity:1}
+@media (prefers-reduced-motion: reduce){.pulse,.typed::after,#scan.on,#spark.on{animation:none}}
+
+:root{--ink:#F2FFFB;--ink2:#A9C9CF;--mint:rgba(255,255,255,.06);--em:#5BF0B0;--teal:#3FE0CF;--gold:#FFC857;--gold2:#FFC857;color-scheme:dark}
+body{background:#081322;color:var(--ink)}
+#stage{background:#10283C}
+#vig{background:radial-gradient(ellipse 80% 65% at 50% 42%,transparent 50%,rgba(24,10,60,.5) 100%)}
+#cap{background:rgba(10,22,40,.88);color:#F4FFFB;border-left-color:#3FE0CF;box-shadow:0 10px 34px rgba(0,0,0,.4),0 0 0 1px rgba(63,224,207,.28);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+#cap .ch{color:#5BF0B0}
+#hud{background:linear-gradient(180deg,rgba(6,16,32,.85),rgba(6,16,32,.35))}
+#hud .h1{color:#5BF0B0}#hud .h2{color:#A9C9CF}
+.pill{background:rgba(255,255,255,.08);color:#F2FFFB;border-color:rgba(63,224,207,.45)}
+.pill.ev{color:#FFC857;border-color:rgba(255,200,87,.6)}
+#toast div{background:rgba(32,22,6,.93);color:#FFF6E0;box-shadow:0 0 30px rgba(255,200,87,.3)}
+.sheet{background:rgba(10,20,38,.96);color:#F2FFFB;box-shadow:0 -14px 44px rgba(0,0,0,.45);border-top:1px solid rgba(63,224,207,.4)}
+.cs,.bs{color:#A9C9CF}.cfb{color:#FF9AA6}
+.opt{background:rgba(255,255,255,.06);border-color:rgba(63,224,207,.4);color:#F2FFFB}
+.opt .oi{background:#E9FBF5}
+.opt.right{background:rgba(255,200,87,.16)}
+.btn{background:linear-gradient(90deg,#3FE0CF,#7CF29A);color:#06202A;box-shadow:0 0 22px rgba(63,224,207,.35)}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,.35);color:#F2FFFB;box-shadow:none}
+.card{background:rgba(10,20,38,.95);color:#F2FFFB;box-shadow:0 18px 50px rgba(0,0,0,.5),0 0 0 1px rgba(63,224,207,.3)}
+.panel{background:rgba(255,255,255,.06)}.panel.hl{background:rgba(255,200,87,.13)}
+.panel span{color:#A9C9CF}
+.panel svg:not(.big){background:#E9FBF5;border-radius:calc(var(--u)*2.4);padding:calc(var(--u)*1)}
+.ci{border-left-color:rgba(255,255,255,.2)}.ci .cd{color:#C2DCE0}
+.xpf{color:#FFC857;text-shadow:0 0 18px rgba(255,200,87,.85),0 2px 0 #0A1626}
+#home{background:linear-gradient(180deg,rgba(8,18,34,0) 0,rgba(8,18,34,.5) 36%,rgba(8,18,34,.96) 70%)}
+#home .k{color:#3FE0CF}#home p{color:#C2DCE0}
+.pbtn{background:rgba(255,255,255,.06);color:#F2FFFB;border-color:rgba(63,224,207,.45)}
+.pbtn.first{background:linear-gradient(90deg,#3FE0CF,#7CF29A);color:#06202A;box-shadow:0 0 26px rgba(63,224,207,.4)}
+.pbtn.first small{color:#0B4A44}
+#world.healed #dawn{opacity:1}
+
+#stage{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.nml{display:block;font-size:calc(var(--u)*3.4);font-weight:800;letter-spacing:.16em;color:#3FE0CF;margin-bottom:calc(var(--u)*1.4)}
+#nm{width:100%;font:inherit;font-size:calc(var(--u)*5);font-weight:700;color:#F2FFFB;background:rgba(255,255,255,.08);border:2px solid rgba(63,224,207,.5);border-radius:calc(var(--u)*3.4);padding:calc(var(--u)*2.8) calc(var(--u)*3.6);margin-bottom:calc(var(--u)*3.6);outline:none;-webkit-user-select:text;user-select:text}
+#nm:focus{border-color:#FFC857;box-shadow:0 0 0 3px rgba(255,200,87,.25)}
+#nm::placeholder{color:rgba(242,255,251,.45)}
+.tip{font-size:calc(var(--u)*3.2);color:#A9C9CF;margin-top:calc(var(--u)*3);line-height:1.4}
+.skipb{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--u)*30);font:inherit;font-size:calc(var(--u)*4);font-weight:700;color:#06202A;background:#FFC857;border:0;border-radius:99px;padding:calc(var(--u)*2.4) calc(var(--u)*5);box-shadow:0 0 24px rgba(255,200,87,.5);cursor:pointer;z-index:5}
+.sheet.menu{z-index:30;background:#0A1426}
+.sheet.menu .bh{text-align:center;margin-bottom:calc(var(--u)*2)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="camwrap"><svg id="world" viewBox="0 0 900 1600" aria-hidden="true"></svg></div>
+  <canvas id="fx"></canvas>
+  <svg id="ov" viewBox="0 0 900 1600" aria-hidden="true"></svg>
+  <div id="vig"></div>
+  <div id="black"></div>
+  <div id="sweep"></div>
+  <div id="spark" role="button" aria-label="Hidden clue here"></div>
+  <div id="titles"><div class="tw"></div></div>
+  <div id="camtag"><i></i><span></span></div>
+  <div id="cap" aria-live="polite"></div>
+  <div id="ui"></div>
+  <div id="hud">
+    <div><div class="h1">SPECIMEN 07</div><div class="h2" id="hudPart"></div></div>
+    <div class="hr">
+      <button class="pill ev" id="evBtn" aria-label="Hidden clues found">◆ 0/6</button>
+      <button class="pill ev" id="xpBtn" aria-label="Your XP">⚡ 0</button>
+      <button class="pill" id="soundBtn" aria-label="Sound: voice and effects">🔊</button>
+      <button class="pill" id="menuBtn" aria-label="Menu: restart, skip or go home">☰</button>
+    </div>
+  </div>
+  <button id="scan" aria-label="Scan for the hidden clue">🔍 Scan</button>
+  <div id="toast"></div>
+  <div id="home">
+    <div class="k">BOTANICAL RESEARCH LAB</div>
+    <h1>The plant with no name</h1>
+    <p id="homeP">Someone wiped a botanical lab. One plant survived. Help Sprout, the lab AI, find out who she is before W strikes again.<br><b>Sound on.</b></p>
+    <label class="nml" for="nm">YOUR NAME, DETECTIVE</label><input id="nm" maxlength="18" autocomplete="off" placeholder="Type your name">
+    <div class="parts" id="parts"></div>
+    <div class="tip">Opened inside WhatsApp? Tap ⋮ and choose “Open in browser” (Chrome/Safari) for sound and Sprout’s voice.</div>
+  </div>
+</div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const D=Math.PI/180;
+const stage=$('#stage'),world=$('#world'),camwrap=$('#camwrap'),ov=$('#ov'),capEl=$('#cap'),tw=$('#titles .tw'),ui=$('#ui'),blackEl=$('#black'),hud=$('#hud'),toastEl=$('#toast'),scanBtn=$('#scan'),spark=$('#spark');
+const ABORT={abort:true};
+const PARTNAMES={1:'The plant with no name',2:'The flower code',3:'The identity'};
+const S={xp:0,token:0,voice:true,sound:true,found:{},unlocked:1,pass:{1:0,2:0,3:0},part:1,heart:null};
+try{const d=JSON.parse(localStorage.getItem('specimen07v3')||'null');if(d){S.found=d.found||{};S.unlocked=d.unlocked||1;S.pass=d.pass||S.pass;S.xp=d.xp||0;S.name=d.name||''}}catch(e){}
+function cls(e,m){if(e)e.classList[m]('on')}
+function NM(){return S.name||'detective'}
+function cleanName(v){return (v||'').replace(/[<>&"`\\{}]/g,'').replace(/\s+/g,' ').trim().slice(0,18)}
+function save(){try{localStorage.setItem('specimen07v3',JSON.stringify({found:S.found,unlocked:S.unlocked,pass:S.pass,xp:S.xp,name:S.name}))}catch(e){}}
+
+/* ---------- sizing ---------- */
+const FX={w:360,h:640,r:1,p:[]};
+function fit(){const vw=innerWidth,vh=innerHeight;let w=Math.min(vw,vh*9/16),h=w*16/9;if(h>vh){h=vh;w=h*9/16}
+stage.style.width=w+'px';stage.style.height=h+'px';stage.style.setProperty('--u',(w/100)+'px');
+const c=$('#fx'),r=Math.min(2,devicePixelRatio||1);c.width=w*r;c.height=h*r;FX.w=w;FX.h=h;FX.r=r}
+(function(){const n=matchMedia('(prefers-reduced-motion: reduce)').matches?10:34;
+for(let i=0;i<n;i++)FX.p.push({x:Math.random(),y:Math.random(),v:.00005+Math.random()*.00014,r:.8+Math.random()*1.8,ph:Math.random()*6,c:Math.random()<.5?'120,255,225':(Math.random()<.5?'255,210,120':'200,170,255')});
+const ctx=$('#fx').getContext('2d');
+(function f(t){ctx.setTransform(FX.r,0,0,FX.r,0,0);ctx.clearRect(0,0,FX.w,FX.h);
+for(const p of FX.p){p.y-=p.v*16;if(p.y<-.02){p.y=1.02;p.x=Math.random()}const x=(p.x+Math.sin(t*.0003+p.ph)*.01)*FX.w,y=p.y*FX.h;const a=.45+.4*Math.sin(t*.001+p.ph);
+ctx.fillStyle=`rgba(${p.c},${Math.max(0,a)})`;ctx.beginPath();ctx.arc(x,y,p.r,0,7);ctx.fill()}requestAnimationFrame(f)})(0)})();
+
+/* ---------- audio ---------- */
+const A={ctx:null};
+function audioInit(){if(A.ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const C=new AC();A.ctx=C;
+A.master=C.createGain();A.master.gain.value=S.sound?.9:0;A.master.connect(C.destination);
+const len=C.sampleRate*2.4,ib=C.createBuffer(2,len,C.sampleRate);for(let ch=0;ch<2;ch++){const d=ib.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}
+A.rev=C.createConvolver();A.rev.buffer=ib;const rg=C.createGain();rg.gain.value=.45;A.rev.connect(rg);rg.connect(A.master);
+const nb=C.createBuffer(1,C.sampleRate*2,C.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;A.noise=nb;
+const bb=C.createBuffer(1,C.sampleRate*4,C.sampleRate),bd=bb.getChannelData(0);let last=0;for(let i=0;i<bd.length;i++){last=(last+.02*(Math.random()*2-1))/1.02;bd[i]=last*3.2}
+const g=v=>{const x=C.createGain();x.gain.value=v;return x};
+A.humG=g(0);const lp=C.createBiquadFilter();lp.type='lowpass';lp.frequency.value=320;lp.connect(A.humG);A.humG.connect(A.master);
+[[60,.6],[120,.25],[180,.08]].forEach(([f,a])=>{const o=C.createOscillator();o.frequency.value=f;const v=g(a);o.connect(v);v.connect(lp);o.start()});
+A.airG=g(0);const src=C.createBufferSource();src.buffer=bb;src.loop=true;const af=C.createBiquadFilter();af.type='lowpass';af.frequency.value=700;const lfo=C.createOscillator();lfo.frequency.value=.07;const lg=g(260);lfo.connect(lg);lg.connect(af.frequency);lfo.start();src.connect(af);af.connect(A.airG);A.airG.connect(A.master);src.start();
+A.bedG=g(0);const bl=C.createBiquadFilter();bl.type='lowpass';bl.frequency.value=420;bl.connect(A.bedG);A.bedG.connect(A.master);const br=g(.25);A.bedG.connect(br);br.connect(A.rev);
+[[55,.5],[55.35,.4],[82.4,.28],[110.2,.1]].forEach(([f,a])=>{const o=C.createOscillator();o.frequency.value=f;const v=g(a);o.connect(v);v.connect(bl);o.start()})}
+function silentWav(){const n=8000,b=new ArrayBuffer(44+n),v=new DataView(b);const w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,8000,true);v.setUint32(28,8000,true);v.setUint16(32,1,true);v.setUint16(34,8,true);w(36,'data');v.setUint32(40,n,true);for(let i=0;i<n;i++)v.setUint8(44+i,128);return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))}
+function unlockAudio(){audioInit();try{if(A.ctx&&A.ctx.state!=='running')A.ctx.resume();if(A.ctx){const b=A.ctx.createBuffer(1,1,22050),src=A.ctx.createBufferSource();src.buffer=b;src.connect(A.ctx.destination);src.start(0)}}catch(e){}
+try{if(!A.silent){const a=new Audio(silentWav());a.loop=true;a.setAttribute('playsinline','');a.volume=.05;A.silent=a}A.silent.play().catch(()=>{})}catch(e){}
+if(window.speechSynthesis){try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}catch(e){}}}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&A.ctx&&A.ctx.state!=='running'){try{A.ctx.resume()}catch(e){}}});
+function amb(o,s=2){if(!A.ctx)return;const n=A.ctx.currentTime;for(const k in o){const G=A[k+'G'];if(!G)continue;G.gain.cancelScheduledValues(n);G.gain.setValueAtTime(G.gain.value,n);G.gain.linearRampToValueAtTime(o[k],n+s)}}
+function tone(f,d,type='sine',gv=.1,when=0,rev=.3,to){if(!A.ctx)return;const C=A.ctx,t=C.currentTime+when;const o=C.createOscillator(),v=C.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(to)o.frequency.exponentialRampToValueAtTime(to,t+d);
+v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(gv,t+.012);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v);v.connect(A.master);if(rev){const r=C.createGain();r.gain.value=rev;v.connect(r);r.connect(A.rev)}o.start(t);o.stop(t+d+.05)}
+function noiseHit(d,f0,f1,gv,when=0,q=1.2){if(!A.ctx)return;const C=A.ctx,t=C.currentTime+when;const s=C.createBufferSource();s.buffer=A.noise;const bp=C.createBiquadFilter();bp.type='bandpass';bp.Q.value=q;bp.frequency.setValueAtTime(f0,t);bp.frequency.exponentialRampToValueAtTime(f1,t+d);const v=C.createGain();v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(gv,t+d*.45);v.gain.linearRampToValueAtTime(0,t+d);s.connect(bp);bp.connect(v);v.connect(A.master);const r=C.createGain();r.gain.value=.35;v.connect(r);r.connect(A.rev);s.start(t);s.stop(t+d+.05)}
+const sfx={
+ tick(){tone(2300,.025,'square',.016,0,0)},
+ click(){tone(1500,.09,'sine',.07,0,.3);tone(2250,.06,'sine',.035,.035,.3)},
+ beep(){tone(1760,.09,'sine',.05,0,.2);tone(2093,.09,'sine',.045,.12,.2)},
+ soft(){tone(233,.3,'triangle',.07,0,.3);tone(208,.4,'triangle',.05,.13,.3)},
+ unlock(){[523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,1,'sine',.06,i*.08,.7))},
+ chime(){[987.8,1318.5,1975.5].forEach((f,i)=>tone(f,1.2,'sine',.055,i*.07,.8))},
+ whoosh(gv=.3){noiseHit(1.1,260,2600,gv)},
+ buzz(){tone(98,.18,'sawtooth',.05,0,0);noiseHit(.15,3000,1500,.08)},
+ thump(gv=.5){tone(72,.28,'sine',gv,0,.15,36)},
+ glitch(){for(let i=0;i<9;i++)tone(120+Math.random()*1800,.05,'square',.045,i*.07,0);noiseHit(.7,4000,300,.28,0,.4)},
+ swell(){[110,164.8,220,329.6].forEach((f,i)=>{if(!A.ctx)return;const C=A.ctx,t=C.currentTime;const o=C.createOscillator(),v=C.createGain();o.frequency.value=f;v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(.035,t+2+i*.25);v.gain.linearRampToValueAtTime(0,t+6);o.connect(v);v.connect(A.master);const r=C.createGain();r.gain.value=.6;v.connect(r);r.connect(A.rev);o.start(t);o.stop(t+6.2)})}
+};
+function heart(on){clearInterval(S.heart);S.heart=null;if(on){const b=()=>{sfx.thump(.45);setTimeout(()=>sfx.thump(.28),250)};b();S.heart=setInterval(b,1150)}}
+
+/* ---------- narration ---------- */
+let VOICE=null;
+function pickVoice(){if(!window.speechSynthesis)return;const vs=speechSynthesis.getVoices();if(!vs.length)return;
+const pref=[/en-IN.*(Natural|Neural)/i,/(Natural|Neural).*(India)/i,/Google UK English Male/i,/Daniel/i,/Rishi/i,/en-GB.*(Natural|Neural)/i,/(Natural|Neural)/i,/Google UK English Female/i];
+for(const re of pref){const v=vs.find(v=>/^en/i.test(v.lang)&&(re.test(v.name)||re.test(v.lang+' '+v.name)));if(v){VOICE=v;return}}
+VOICE=vs.find(v=>/^en-(GB|IN)/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}
+if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function speak(text){return new Promise(res=>{if(!S.voice||!window.speechSynthesis)return res();let done=false;const fin=()=>{if(!done){done=true;res()}};
+try{const u=new SpeechSynthesisUtterance(text.replace(/…/g,'...').replace(/’/g,"'").replace(/🔍/g,''));u.rate=1.02;u.pitch=1;if(VOICE){u.voice=VOICE;u.lang=VOICE.lang}else u.lang='en-GB';u.onend=fin;u.onerror=fin;setTimeout(fin,1800+text.length*80);speechSynthesis.speak(u)}catch(e){fin()}})}
+
+/* ---------- timing + text ---------- */
+function wait(ms){const t=S.token;return new Promise((res,rej)=>setTimeout(()=>t===S.token?res():rej(ABORT),ms))}
+const AV=`<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 10 C20 5 24 1 30 2 C29 7 25 10 20 10Z" fill="#2FBF85"/><path d="M20 10 C20 6 16 2 11 3 C12 8 16 10 20 10Z" fill="#5BEAAA"/><circle cx="20" cy="24" r="14" fill="#11A69A"/><rect x="9.5" y="18" width="21" height="11.5" rx="5.7" fill="#F2FFFB"/><circle cx="15.5" cy="23.6" r="2.5" fill="#6FF0DF"/><circle cx="24.5" cy="23.6" r="2.5" fill="#6FF0DF"/></svg>`;
+function capShow(t,head,av){capEl.classList.remove('on');clearTimeout(capShow.tm);capShow.tm=setTimeout(()=>{capEl.innerHTML=(av?`<div class="av">${AV}</div>`:'')+`<div class="ct">${head?`<span class="ch">${head}</span>`:''}${t}</div>`;capEl.classList.add('on')},140)}
+function capOff(){clearTimeout(capShow.tm);capEl.classList.remove('on')}
+async function say(text,hold=350,head='SPROUT'){const t=S.token;const titled=tw.children.length>0;if(!titled)capShow(text,head,head==='SPROUT');const words=text.split(/\s+/).length;
+await Promise.all([new Promise(r=>setTimeout(r,Math.max(1300,words*300+300))),speak(text)]);if(t!==S.token)throw ABORT;await wait(hold)}
+function tLine(text,cls='t-big'){capOff();const d=document.createElement('div');d.className='tl '+cls;d.textContent=text;tw.appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('on')));return d}
+function tClear(ms=500){[...tw.children].forEach(e=>{e.classList.remove('on','typed')});return wait(ms).then(()=>{tw.innerHTML=''})}
+async function typeLine(text,cls){capOff();const d=document.createElement('div');d.className='tl typed '+cls;tw.appendChild(d);for(const ch of text){d.textContent+=ch;if(ch!==' ')sfx.tick();await wait(42)}return d}
+function black(on,ms=900){blackEl.style.transition=`opacity ${ms}ms ease`;blackEl.style.opacity=on?1:0;return wait(ms)}
+function camTag(t){const c=$('#camtag');if(!t){c.style.opacity=0;return}c.querySelector('span').textContent=t;c.style.opacity=1;sfx.click()}
+function toast(title,body,ms=4800){toastEl.innerHTML=`<div><b>${title}</b>${body}</div>`;toastEl.classList.add('on');clearTimeout(toast.tm);toast.tm=setTimeout(()=>toastEl.classList.remove('on'),ms)}
+
+/* ---------- camera (focus point sits at 40% height, above the caption zone) ---------- */
+const cam={x:450,y:800,s:1,blur:0};
+function applyCam(){const g=document.getElementById('cam');if(g)g.setAttribute('transform',`translate(450 640) scale(${cam.s}) translate(${-cam.x} ${-cam.y})`);camwrap.style.filter=cam.blur>.15?`blur(${cam.blur.toFixed(2)}px)`:'none'}
+function setCam(o){Object.assign(cam,o);applyCam()}
+const ease=k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+function camTo(o,dur=2400){const t=S.token,f={...cam};return new Promise((res,rej)=>{const st=performance.now();(function step(n){if(t!==S.token)return rej(ABORT);const k=Math.min(1,(n-st)/dur),e=ease(k);
+for(const key in o){cam[key]=key==='s'?f.s*Math.pow(o.s/f.s,e):f[key]+(o[key]-f[key])*e}applyCam();k<1?requestAnimationFrame(step):res()})(st)})}
+
+/* ---------- drawing helpers ---------- */
+const sx=y=>450+5*Math.sin((1020-y)/110);
+const NODES=[950,872,796,724,656,594,538],LL=[165,158,148,135,120,104,86];
+const f1=n=>(+n).toFixed(1);
+function leafPath(L,W){return `M0 0 C${f1(L*.16)} ${f1(-W*.64)} ${f1(L*.64)} ${f1(-W*.62)} ${L} 0 C${f1(L*.64)} ${f1(W*.62)} ${f1(L*.16)} ${f1(W*.64)} 0 0Z`}
+function veins(L,W,op=.55,col='#C8FAE0'){let s=`<path d="M2 0 L${f1(L*.95)} 0" stroke="${col}" stroke-opacity="${op}" stroke-width="${f1(L/90)}" fill="none" stroke-linecap="round"/>`;
+for(let k=1;k<=5;k++){const x=L*k/6.4,w=W*.4*(1-k/7.2);s+=`<path d="M${f1(x)} 0 Q${f1(x+L*.05)} ${f1(-w*.55)} ${f1(x+L*.14)} ${f1(-w)} M${f1(x)} 0 Q${f1(x+L*.05)} ${f1(w*.55)} ${f1(x+L*.14)} ${f1(w)}" stroke="${col}" stroke-opacity="${op*.65}" stroke-width="${f1(L/170)}" fill="none"/>`}return s}
+function leafAt(L,W,fill='url(#gLeaf)',stroke='#0A5A40'){return `<path d="${leafPath(L,W)}" fill="${fill}" stroke="${stroke}" stroke-width="${f1(L/110)}"/>${veins(L,W)}`}
+function flowerFace(r){let s='';for(let k=0;k<5;k++){s+=`<path d="M0 0 L${f1(r*.95)} ${f1(-r*.16)} L${f1(r*1.05)} 0 L${f1(r*.95)} ${f1(r*.16)}Z" transform="rotate(${k*72+36})" fill="url(#gSep)"/>`}
+for(let k=0;k<5;k++)s+=`<ellipse cx="${f1(r*.52)}" cy="0" rx="${f1(r*.5)}" ry="${f1(r*.34)}" transform="rotate(${k*72})" fill="url(#gPet)" stroke="#6A4BD8" stroke-opacity=".35" stroke-width="${f1(r/40)}"/>`;
+s+=`<circle r="${f1(r*.55)}" fill="url(#gPet)"/>`;for(let k=0;k<5;k++)s+=`<path d="M0 0 L${f1(r*.95)} 0" transform="rotate(${k*72})" stroke="#fff" stroke-opacity=".45" stroke-width="${f1(r/30)}"/>`;
+for(let k=0;k<5;k++)s+=`<ellipse cx="${f1(r*.15)}" cy="0" rx="${f1(r*.16)}" ry="${f1(r*.06)}" transform="rotate(${k*72+36})" fill="#FFC93D" stroke="#C08A10" stroke-width="${f1(r/80)}"/>`;
+return s+`<circle r="${f1(r*.06)}" fill="#5FD08A"/>`}
+function budAt(r){return `<path d="M0 ${f1(r*.2)} C${f1(-r*.55)} ${f1(-r*.3)} ${f1(-r*.2)} ${f1(-r*1.3)} 0 ${f1(-r*1.5)} C${f1(r*.2)} ${f1(-r*1.3)} ${f1(r*.55)} ${f1(-r*.3)} 0 ${f1(r*.2)}Z" fill="url(#gPet)"/><path d="M${f1(-r*.5)} 0 L${f1(-r*.25)} ${f1(-r*.75)} L0 ${f1(-r*.1)} L${f1(r*.25)} ${f1(-r*.75)} L${f1(r*.5)} 0 Q0 ${f1(r*.45)} ${f1(-r*.5)} 0Z" fill="url(#gSep)"/>`}
+const DEFS=`<defs>
+<linearGradient id="gBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D2A45"/><stop offset=".55" stop-color="#16405A"/><stop offset="1" stop-color="#1E2A52"/></linearGradient><radialGradient id="gDawn" cx=".35" cy=".1" r=".8"><stop offset="0" stop-color="#FFD08A" stop-opacity=".75"/><stop offset=".5" stop-color="#FF9FB8" stop-opacity=".25"/><stop offset="1" stop-color="#FF9FB8" stop-opacity="0"/></radialGradient>
+<linearGradient id="gFloorL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#173451"/><stop offset="1" stop-color="#0E1F38"/></linearGradient>
+<linearGradient id="gLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5BEAAA"/><stop offset=".5" stop-color="#1EA673"/><stop offset="1" stop-color="#0E6A4C"/></linearGradient>
+<linearGradient id="gDry" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D4B98A"/><stop offset="1" stop-color="#8E7451"/></linearGradient>
+<linearGradient id="gStem" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#11744F"/><stop offset=".45" stop-color="#5BE3A6"/><stop offset="1" stop-color="#0F6A4A"/></linearGradient>
+<linearGradient id="gRoot" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D9B26A"/><stop offset=".5" stop-color="#FFF4D6"/><stop offset="1" stop-color="#CFA35A"/></linearGradient>
+<linearGradient id="gGel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1C8C86"/><stop offset="1" stop-color="#0D3E48"/></linearGradient>
+<radialGradient id="gPet" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".3" stop-color="#E2D6FF"/><stop offset=".72" stop-color="#A78BFF"/><stop offset="1" stop-color="#6C4DDB"/></radialGradient>
+<linearGradient id="gSep" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6BEAB0"/><stop offset="1" stop-color="#127A53"/></linearGradient>
+<radialGradient id="gBerry" cx=".36" cy=".3" r=".75"><stop offset="0" stop-color="#FFB09A"/><stop offset=".35" stop-color="#F0444F"/><stop offset=".8" stop-color="#B21E37"/><stop offset="1" stop-color="#7A1028"/></radialGradient>
+<linearGradient id="gMetal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A6A7C"/><stop offset="1" stop-color="#2A4352"/></linearGradient>
+<linearGradient id="gBeam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FF5FF" stop-opacity=".35"/><stop offset="1" stop-color="#8FF5FF" stop-opacity="0"/></linearGradient>
+<radialGradient id="gGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#4DFFB8" stop-opacity=".5"/><stop offset="1" stop-color="#4DFFB8" stop-opacity="0"/></radialGradient>
+<radialGradient id="gVio" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#9A6BFF" stop-opacity=".42"/><stop offset="1" stop-color="#9A6BFF" stop-opacity="0"/></radialGradient>
+<radialGradient id="gSun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#A9E8FF" stop-opacity=".4"/><stop offset="1" stop-color="#A9E8FF" stop-opacity="0"/></radialGradient>
+<linearGradient id="gOvary" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B5F7D6"/><stop offset=".6" stop-color="#46C58C"/><stop offset="1" stop-color="#1D7A5C"/></linearGradient>
+<linearGradient id="gOvBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0F3050"/><stop offset="1" stop-color="#25205A"/></linearGradient>
+<filter id="glowF" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b"/><feColorMatrix in="b" type="matrix" values="1 0 0 0 .4  0 1 0 0 .3  0 0 1 0 0  0 0 0 1.8 0" result="c"/><feMerge><feMergeNode in="c"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="2.5"/></filter>
+<pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="#7CC4E0" stroke-opacity=".55" stroke-width="1"/></pattern>
+</defs>`;
+
+/* ---------- dead plants (the lab's tragedy) ---------- */
+function dryLeaf(x,y,a,L){return `<g transform="translate(${f1(x)} ${f1(y)}) rotate(${a})"><path d="${leafPath(L,L*.38)}" fill="url(#gDry)" stroke="#6E5638" stroke-width="1.2"/><path d="M2 0 L${f1(L*.9)} 0" stroke="#6E5638" stroke-opacity=".6" stroke-width="1"/></g>`}
+let DPN=0;
+function alivePlant(){const cols=['#A78BFF','#FFC93D','#FF8FB1','#7FD8FF'];const c=cols[DPN%4];let s=`<path d="M-28 -56 L28 -56 L21 0 L-21 0Z" fill="#E59A6B"/><rect x="-32" y="-64" width="64" height="11" rx="3" fill="#D4825A"/><ellipse cx="0" cy="-61" rx="25" ry="4" fill="#6E5848"/><path d="M0 -62 C-3 -100 3 -130 0 -170" stroke="#23A876" stroke-width="4.5" fill="none" stroke-linecap="round"/>`;
+[[-90,-1,34],[-112,1,32],[-134,-1,28],[-152,1,22]].forEach(([y,sd,L])=>{s+=`<g transform="translate(0 ${y}) rotate(${sd>0?-25:-155})">${leafAt(L,L*.5)}</g>`});
+for(let k=0;k<5;k++)s+=`<ellipse cx="7" cy="0" rx="7" ry="4.6" transform="translate(0 -176) rotate(${k*72})" fill="${c}"/>`;return s+`<circle cx="0" cy="-176" r="3.6" fill="#fff"/>`}
+function deadPlant(x,y,sc,v){DPN++;let s=`<g class="dp" style="--d:${((DPN*0.137)%1.6).toFixed(2)}s"><g class="dead"><g transform="translate(${x} ${y}) scale(${sc})${v===2?' rotate(78 0 0)':''}">`;
+s+=`<path d="M-28 -56 L28 -56 L21 0 L-21 0Z" fill="#C9AE93"/><rect x="-32" y="-64" width="64" height="11" rx="3" fill="#B89A7E"/><path d="M9 -54 L3 -36 L10 -22 L6 -10" stroke="#7E644D" stroke-width="1.6" fill="none"/><ellipse cx="0" cy="-61" rx="25" ry="4" fill="#6E5848"/>`;
+if(v===0){s+=`<path d="M0 -62 C3 -120 8 -150 30 -158 Q52 -160 54 -128" stroke="#8A714F" stroke-width="4" fill="none" stroke-linecap="round"/>`+dryLeaf(2,-95,150,34)+dryLeaf(5,-118,40,30)+dryLeaf(54,-128,100,28)+dryLeaf(20,-150,200,22)}
+else if(v===1){s+=`<path d="M0 -62 C-2 -100 2 -130 -4 -150" stroke="#8A714F" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M-4 -150 L18 -118 Q26 -100 20 -84" stroke="#8A714F" stroke-width="3" fill="none" stroke-linecap="round"/>`+dryLeaf(0,-90,200,32)+dryLeaf(20,-86,95,26)+dryLeaf(-2,-125,-30,24)}
+else{s+=`<path d="M0 -62 C4 -100 -6 -130 -20 -150" stroke="#8A714F" stroke-width="4" fill="none" stroke-linecap="round"/>`+dryLeaf(-4,-110,-160,30)+dryLeaf(-20,-150,-110,24)+`<ellipse cx="-30" cy="-66" rx="30" ry="7" fill="#6E5848" opacity=".8"/>`}
+s+=`</g>`;if(v!==2)s+=dryLeaf(x+36*sc,y-3,8,22*sc)+dryLeaf(x-44*sc,y-2,172,18*sc);
+return s+`</g><g class="alive"><g transform="translate(${x} ${y}) scale(${sc})">${alivePlant()}</g></g></g>`}
+
+/* ---------- the world ---------- */
+function rootsSVG(){const rx=y=>450+3*Math.sin((y-1020)/38);let L=[],R=[];
+for(let y=1020;y<=1300;y+=5){const t=(y-1020)/280,w=12-7*t;L.push(`${f1(rx(y)-w/2)},${y}`);R.unshift(`${f1(rx(y)+w/2)},${y}`)}
+let s='';const lat=[[1050,-1,100,52],[1064,1,92,46],[1110,-1,82,54],[1124,1,80,48],[1168,-1,62,40],[1180,1,58,38],[1214,-1,36,24],[1220,1,34,22]];
+lat.forEach(([y,sd,dx,dy],i)=>{const x0=rx(y),x1=x0+sd*dx,y1=y+dy,w=3.6-i*.25;s+=`<path d="M${f1(x0)} ${y} Q${f1(x0+sd*dx*.5)} ${f1(y+dy*.12)} ${f1(x1)} ${y1}" stroke="#8C6A2C" stroke-width="${f1(w+1.4)}" fill="none" stroke-linecap="round"/><path d="M${f1(x0)} ${y} Q${f1(x0+sd*dx*.5)} ${f1(y+dy*.12)} ${f1(x1)} ${y1}" stroke="#FFEFC8" stroke-width="${f1(w)}" fill="none" stroke-linecap="round"/>`;
+[.45,.75].forEach(p=>{const px=x0+sd*dx*p,py=y+dy*p*p*.9;s+=`<path d="M${f1(px)} ${f1(py)} q${f1(sd*6)} 10 ${f1(sd*4)} ${f1(18+dx*.08)}" stroke="#FFEFC8" stroke-width="1.4" fill="none" stroke-linecap="round"/>`})});
+s+=`<polygon points="${L.join(' ')} ${R.join(' ')}" fill="url(#gRoot)" stroke="#8C6A2C" stroke-width=".8"/>`;
+const c=rx(1300);
+s+=`<path d="M${f1(c-2.7)} 1293 Q${f1(c-3.6)} 1311 ${f1(c)} 1315 Q${f1(c+3.6)} 1311 ${f1(c+2.7)} 1293Z" fill="#E0A64C" stroke="#8C6A2C" stroke-width=".4"/>`;
+for(let y=1281;y<1294;y+=1.3){const w=(12-7*(y-1020)/280)/2;s+=`<path d="M${f1(rx(y)-w)} ${f1(y)}H${f1(rx(y)+w)}" stroke="#A9772C" stroke-width=".28"/>`}
+for(let y=1258;y<1281;y+=3.6){const w=(12-7*(y-1020)/280)/2;s+=`<path d="M${f1(rx(y)-w)} ${f1(y)}H${f1(rx(y)+w)}" stroke="#B88A3E" stroke-width=".3"/>`}
+let hs='';for(let y=1224;y<1257;y+=2.2){const w=(12-7*(y-1020)/280)/2,a=Math.sin(y*7.3),b=Math.cos(y*5.1);
+hs+=`M${f1(rx(y)-w)} ${f1(y)} q${f1(-3-2*Math.abs(a))} ${f1(.6+a)} ${f1(-6-3*Math.abs(b))} ${f1(1.2+a)} M${f1(rx(y)+w)} ${f1(y+1)} q${f1(3+2*Math.abs(b))} ${f1(.6+b)} ${f1(6+3*Math.abs(a))} ${f1(1.2+b)} `}
+s+=`<path d="${hs}" stroke="#FFFFFF" stroke-width=".55" fill="none" stroke-linecap="round"/>`;
+s+=`<rect class="clue" data-clue="p1b" x="425" y="1216" width="50" height="46" fill="transparent"/>`;
+return `<g id="rootG">${s}</g>`}
+function stemSVG(){let L=[],R=[];for(let y=1024;y>=450;y-=6){const w=6+8*((y-450)/574);L.push(`${f1(sx(y)-w/2)},${y}`);R.unshift(`${f1(sx(y)+w/2)},${y}`)}
+let s=`<polygon points="${L.join(' ')} ${R.join(' ')}" fill="url(#gStem)" stroke="#0B5A3E" stroke-width=".8"/>`;
+NODES.forEach((y,i)=>{const w=6+8*((y-450)/574),side=i%2?1:-1,bx=sx(y)+side*(w*.55+2);s+=`<ellipse cx="${f1(sx(y))}" cy="${y}" rx="${f1(w*.72)}" ry="3.6" fill="#1A8E62" stroke="#0B5A3E" stroke-width=".7"/>`;
+s+=`<ellipse cx="${f1(bx)}" cy="${y-8}" rx="2.6" ry="4.6" transform="rotate(${side*25} ${f1(bx)} ${y-8})" fill="#A6F5CE" stroke="#1F7A55" stroke-width=".6"/>`});
+return `<g id="stemG">${s}</g>`}
+const LEAFGEO=[];
+function leavesSVG(){let s='';NODES.forEach((y,i)=>{const L=LL[i],W=L*.52,side=i%2?1:-1,x=sx(y),pa=side>0?-38:-142,pl=34+L*.08;
+const ex=x+Math.cos(pa*D)*pl,ey=y+Math.sin(pa*D)*pl,la=side>0?-12:-168;LEAFGEO.push({x:ex+Math.cos(la*D)*L*.5,y:ey+Math.sin(la*D)*L*.5,ex,ey,tip:{x:ex+Math.cos(la*D)*L,y:ey+Math.sin(la*D)*L}});
+s+=`<g id="leaf${i}"><path d="M${f1(x)} ${y} Q${f1((x+ex)/2)} ${f1(ey-4)} ${f1(ex)} ${f1(ey)}" stroke="#23A876" stroke-width="3.6" fill="none" stroke-linecap="round"/><g transform="translate(${f1(ex)} ${f1(ey)}) rotate(${la})">${leafAt(L,W)}</g></g>`});return `<g id="leavesG">${s}</g>`}
+function inflSVG(){const ty=452,tx=sx(ty);let s='';
+s+=`<path d="M${f1(tx)} ${ty+2} L${f1(tx)} 434" stroke="#23A876" stroke-width="4" stroke-linecap="round"/>`;
+s+=`<path d="M${f1(sx(492))} 492 Q420 494 398 474" stroke="#23A876" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M${f1(sx(500))} 500 Q486 503 501 488" stroke="#23A876" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M414 486 Q396 498 384 506" stroke="#23A876" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+s+=`<g id="fTerm" transform="translate(${f1(tx)} 428) scale(1 .82)">${flowerFace(25)}</g><g transform="translate(396 470) rotate(-32) scale(1 .5)">${flowerFace(18)}</g><g transform="translate(503 486) rotate(28)">${budAt(9)}</g><g transform="translate(382 508) rotate(-150)">${budAt(6)}</g>`;
+s+=[[tx,428,1],[396,470,2],[503,484,3],[382,510,4]].map(([x,y,n])=>`<circle id="cf${n}" class="tapme" data-tap="1" cx="${f1(x)}" cy="${y}" r="${n===1?24:20}" fill="transparent"/>`).join('');
+s+=`<g id="ageG" class="fadeg" opacity="0" font-family="Sora,sans-serif" font-weight="800" font-size="13" text-anchor="middle">`+[[tx+30,412,1],[366,452,2],[522,474,3],[364,526,4]].map(([x,y,n])=>`<circle cx="${f1(x)}" cy="${y}" r="10" fill="#E2A93B" stroke="#fff" stroke-width="1.5"/><text x="${f1(x)}" y="${y+4.5}" fill="#2A1A00">${n}</text>`).join('')+`</g>`;
+return `<g id="inflG">${s}</g>`}
+function fruitSVG(){const x0=sx(656)+4;let cal='';for(let k=0;k<5;k++){const a=-90+k*72+18;cal+=`<path d="M0 0 Q${f1(Math.cos((a-14)*D)*12)} ${f1(Math.sin((a-14)*D)*12)} ${f1(Math.cos(a*D)*21)} ${f1(Math.sin(a*D)*12+4)} Q${f1(Math.cos((a+14)*D)*12)} ${f1(Math.sin((a+14)*D)*12)} 0 0Z" fill="url(#gSep)" stroke="#0B5A3E" stroke-width=".6"/>`}
+return `<g id="fruitG"><path d="M${f1(x0)} 656 Q508 664 517 706" stroke="#23A876" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="520" cy="738" rx="30" ry="28" fill="url(#gBerry)" stroke="#7A1028" stroke-width=".8"/><ellipse cx="509" cy="726" rx="9" ry="5.5" fill="#fff" opacity=".6" transform="rotate(-30 509 726)"/><g transform="translate(517 712)">${cal}</g><circle class="clue" data-clue="p3a" cx="517" cy="712" r="26" fill="transparent"/></g>`}
+function worldSVG(){let s=DEFS+`<g id="cam"><g id="lab"><rect x="-1400" y="-700" width="3800" height="3000" fill="url(#gBg)"/>`;
+for(let x=-1350;x<2300;x+=300){s+=`<rect x="${x}" y="-200" width="280" height="1120" fill="#7FE7FF" fill-opacity=".05" stroke="#2E6A7E" stroke-width="5"/><path d="M${x+140} -200V920 M${x} 360H${x+280}" stroke="#2E6A7E" stroke-width="4"/>`}
+s+=`<ellipse cx="-300" cy="-100" rx="700" ry="400" fill="url(#gSun)"/><polygon points="-900,-300 -500,-300 700,1500 100,1500" fill="url(#gBeam)" opacity=".55"/><polygon points="-300,-300 -120,-300 1100,1500 820,1500" fill="url(#gBeam)" opacity=".35"/>
+<rect x="-1400" y="1400" width="3800" height="900" fill="url(#gFloorL)"/><path d="M-1400 1400H2400" stroke="#3FE0CF" stroke-opacity=".35" stroke-width="3"/><ellipse cx="450" cy="1420" rx="520" ry="90" fill="#3FE0CF" opacity=".12"/><rect id="dawn" x="-1400" y="-700" width="3800" height="3000" fill="url(#gDawn)" opacity="0" style="transition:opacity 2.5s"/>`;
+const shelf=(x0,x1,y)=>`<rect x="${x0}" y="${y}" width="${x1-x0}" height="14" rx="4" fill="#2C5168" stroke="#5FA7B2" stroke-width="2"/><rect x="${x0+10}" y="${y+14}" width="8" height="${1400-y-14}" fill="#244560"/><rect x="${x1-18}" y="${y+14}" width="8" height="${1400-y-14}" fill="#244560"/>`;
+[[620,0],[960,1],[1290,2]].forEach(([y,j])=>{s+=shelf(-1300,190,y)+shelf(900,2300,y);for(let k=0;k<8;k++){const x=-1220+k*185;if(x<170)s+=deadPlant(x,y,1,(k+j)%3===2&&k%2?2:(k+j)%2)}for(let k=0;k<7;k++){const x=990+k*185;s+=deadPlant(x,y,1,(k+j+1)%3===2&&k%2?2:(k+j)%2)}});
+s+=deadPlant(160,1440,1.25,2)+deadPlant(-120,1450,1.3,0)+deadPlant(960,1450,1.25,1)+deadPlant(1180,1445,1.3,2)+dryLeaf(80,1470,20,26)+dryLeaf(740,1480,160,24)+dryLeaf(680,1460,40,20);
+s+=`</g><g id="bpGrid" class="fadeg" opacity="0"><rect x="-1400" y="-700" width="3800" height="3000" fill="#0C2A46"/><rect x="-1400" y="-700" width="3800" height="3000" fill="url(#grid)"/></g>
+<g id="chamberFx"><ellipse cx="450" cy="740" rx="250" ry="440" fill="url(#gGlow)"/><rect x="262" y="1022" width="376" height="296" fill="url(#gGel)"/><path d="M262 1022H638" stroke="#E6FFF9" stroke-opacity=".8" stroke-width="2"/>`;
+for(let i=0;i<40;i++){const x=270+((i*97)%360),y=1035+((i*53)%270);s+=`<circle cx="${x}" cy="${y}" r="${1+(i%3)*.6}" fill="#E6FFF9" opacity="${.15+(i%4)*.08}"/>`}
+s+=`</g><g id="plant">${rootsSVG()}${stemSVG()}${leavesSVG()}${inflSVG()}${fruitSVG()}</g>
+<g id="glass"><path d="M250 1320 L250 430 Q250 300 450 300 Q650 300 650 430 L650 1320Z" fill="#9FF5FF" fill-opacity=".05" stroke="#6FE8DA" stroke-opacity=".75" stroke-width="3"/>
+<path d="M272 1300 L272 450 Q274 345 360 322" stroke="#fff" stroke-opacity=".35" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M628 1280 L628 600" stroke="#fff" stroke-opacity=".45" stroke-width="9" stroke-linecap="round"/>
+<rect x="352" y="286" width="196" height="16" rx="8" fill="url(#gMetal)"/><rect x="392" y="292" width="116" height="3" rx="1.5" fill="#6FF0DF" class="pulse"/>
+<rect x="225" y="1318" width="450" height="78" rx="12" fill="url(#gMetal)"/><path d="M237 1320H663" stroke="#6FF0DF" stroke-width="2.5"/>
+<text x="268" y="1366" font-family="Sora,sans-serif" font-size="15" font-weight="600" fill="#C6DCE6" letter-spacing="3">BRL-07 / CHAMBER 3</text>
+<g id="glyph"><path d="M612 1384V1336 M612 1374 L599 1366 M612 1360 L625 1352 M612 1346 L599 1338" stroke="#FFD27A" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="612" cy="1374" r="1.9" fill="#FFD27A"/><circle cx="612" cy="1360" r="1.9" fill="#FFD27A"/><circle cx="612" cy="1346" r="1.9" fill="#FFD27A"/></g>
+<rect class="clue" data-clue="p1a" x="570" y="1322" width="88" height="72" fill="transparent"/>
+<g transform="rotate(-4 580 1180)"><path d="M580 1140 L548 1152 M580 1140 L612 1152" stroke="#8A9" stroke-width="1"/><circle cx="580" cy="1140" r="2.5" fill="#789"/><rect x="516" y="1152" width="128" height="52" rx="5" fill="#FFF8E6" stroke="#D8C9A6"/><rect x="516" y="1152" width="128" height="10" rx="3" fill="#E8564F"/>
+<text x="580" y="1180" text-anchor="middle" font-family="Sora,sans-serif" font-weight="800" font-size="12.5" fill="#1B1B22">DO NOT IDENTIFY</text><text x="580" y="1196" text-anchor="middle" font-family="Sora,sans-serif" font-weight="800" font-size="12.5" fill="#1B1B22">FROM THE FLOWER.</text></g></g>
+<g id="term"><rect x="770" y="980" width="12" height="420" fill="#8FB0B5"/><rect x="730" y="1388" width="92" height="14" rx="4" fill="#7E9EA4"/>
+<rect x="686" y="820" width="180" height="168" rx="12" fill="#0E1E2B" stroke="#7E9EA4" stroke-width="5"/><rect x="696" y="830" width="160" height="148" rx="6" fill="#102A3A"/>
+<g id="tmA" font-family="Sora,sans-serif" font-weight="700" font-size="13"><text x="706" y="852" fill="#6FF0DF">SPECIMEN 07</text><text x="706" y="878" fill="#BFD7DF">NAME</text><rect x="760" y="867" width="84" height="13" fill="#3B5566"/><text x="706" y="902" fill="#BFD7DF">FAMILY</text><rect x="768" y="891" width="76" height="13" fill="#3B5566"/><text x="706" y="926" fill="#BFD7DF">FILES   0 / 214</text>
+<rect x="702" y="940" width="148" height="28" rx="5" fill="#FF5A6A" class="pulse"/><text x="776" y="959" text-anchor="middle" fill="#fff" font-size="14">DATA DELETED</text></g><g id="tmW" font-family="Sora,sans-serif" font-weight="800" font-size="16" text-anchor="middle" style="display:none"></g></g>
+<g id="scanPts"></g>
+<g id="nodeMk" class="fadeg" opacity="0">${NODES.map(y=>`<circle cx="${f1(sx(y))}" cy="${y}" r="13" fill="none" stroke="#E2A93B" stroke-width="2.5" class="pulse"/>`).join('')}</g>
+<g id="nodeLb" class="fadeg" opacity="0" font-family="Sora,sans-serif" font-weight="800" font-size="19" paint-order="stroke" stroke="#0C1C30" stroke-width="6">
+<path d="M466 794 L482 788" stroke="#FFC857" stroke-width="2.5"/><text x="486" y="795" fill="#FFC857" stroke="#0C1C30">NODE</text>
+<path d="M424 800 V868 M418 800 H430 M418 868 H430" stroke="#5BF0B0" stroke-width="2.5" fill="none"/><text x="412" y="841" fill="#5BF0B0" text-anchor="end" stroke="#0C1C30">INTERNODE</text>
+<path d="M461 866 L486 912" stroke="#C9B6FF" stroke-width="2.5"/><text x="470" y="934" fill="#C9B6FF" stroke="#0C1C30">AXILLARY BUD</text></g>
+<g id="leafLb" class="fadeg" opacity="0" font-family="Sora,sans-serif" font-weight="800" font-size="15" paint-order="stroke" stroke="#0C1C30" stroke-width="5"></g>
+<g id="badges" font-family="Sora,sans-serif" font-weight="800" font-size="28"></g>
+<g id="bpL" font-family="Sora,sans-serif" font-weight="800" font-size="34" fill="#F2FFFB"></g>
+</g>`;return s}
+
+/* ---------- overlays (light backgrounds, everything above the caption zone) ---------- */
+function ovBg(){return `<rect width="900" height="1600" fill="url(#gOvBg)"/><ellipse cx="450" cy="620" rx="460" ry="560" fill="url(#gVio)"/><ellipse cx="450" cy="700" rx="320" ry="420" fill="url(#gGlow)" opacity=".7"/>`}
+function legAt(x,y,ang,L,sxs=1,op=1){return `<g transform="translate(${x} ${y}) rotate(${ang})" opacity="${op}"><path d="M0 0 L24 0" stroke="#23A876" stroke-width="5" stroke-linecap="round"/><g transform="translate(24 0) scale(${sxs} 1)">${leafAt(L,L*.5)}</g></g>`}
+function phylloSVG(){const N=[960,730,500];let A='',B='',C='';N.forEach((y,i)=>{const sd=i%2?1:-1;A+=legAt(450,y,sd>0?-22:-158,150);B+=legAt(450,y,-22,150)+legAt(450,y,-158,150);
+C+=legAt(450,y,-58,120,.55,.55)+legAt(450,y,-22,140)+legAt(450,y,-158,140)+legAt(450,y,-118,120,.55,.9)+`<ellipse cx="450" cy="${y}" rx="44" ry="13" fill="none" stroke="#E2A93B" stroke-width="3"/>`});
+const cnt=(id,t)=>`<text id="${id}" class="fadeg" opacity="0" x="450" y="230" text-anchor="middle" font-family="Sora,sans-serif" font-weight="800" font-size="50" fill="#F2FFFB">${t}</text>`;
+return DEFS+ovBg()+`<path d="M450 1100 L450 330" stroke="#23A876" stroke-width="12" stroke-linecap="round"/>`+N.map(y=>`<ellipse cx="450" cy="${y}" rx="11" ry="5" fill="#1A8E62" stroke="#0B5A3E"/>`).join('')+
+`<g id="phA" class="fadeg" opacity="0">${A}</g><g id="phB" class="fadeg" opacity="0">${B}</g><g id="phC" class="fadeg" opacity="0">${C}</g>`+cnt('tA','1 leaf at each node')+cnt('tB','2 leaves at each node')+cnt('tC','3 or more at each node')}
+function mini(x,y,r){let s=`<g transform="translate(${x} ${y})">`;for(let k=0;k<5;k++)s+=`<ellipse cx="${r*.55}" cy="0" rx="${r*.5}" ry="${r*.34}" transform="rotate(${k*72})" fill="url(#gPet)" stroke="#6A4BD8" stroke-opacity=".4"/>`;return s+`<circle r="${r*.3}" fill="#FFC93D"/></g>`}
+function abSVG(){let s=DEFS+ovBg()+`<g font-family="Sora,sans-serif" text-anchor="middle"><text x="235" y="200" font-size="42" font-weight="800" fill="#F2FFFB" letter-spacing="3">PLANT A</text><text x="665" y="200" font-size="42" font-weight="800" fill="#F2FFFB" letter-spacing="3">PLANT B</text>`;
+s+=`<path id="axA" class="grow" d="M235 1060 L235 330" stroke="#23A876" stroke-width="10" stroke-linecap="round" fill="none" stroke-dasharray="740" stroke-dashoffset="740"/>`;
+const FA=[[970,-1,28],[880,1,26],[790,-1,23],[700,1,19],[615,-1,15],[535,1,11],[460,-1,8]];
+FA.forEach(([y,sd,r],i)=>{const x=235+sd*64;s+=`<g id="fa${i}" class="pop tapme" data-tap="1"><circle cx="${x}" cy="${y}" r="44" fill="transparent"/><path d="M235 ${y+18} Q${235+sd*30} ${y+16} ${x} ${y}" stroke="#23A876" stroke-width="4" fill="none"/>${r>16?mini(x,y,r):`<g transform="translate(${x} ${y}) rotate(${sd*40})">${budAt(r)}</g>`}</g>`});
+s+=`<g id="apA" class="pop"><circle cx="235" cy="322" r="12" fill="#5FD08A"/><circle cx="235" cy="322" r="24" fill="none" stroke="#11A69A" stroke-width="3" class="pulse"/><path d="M235 290 l-12 14 M235 290 l12 14" stroke="#11A69A" stroke-width="4" stroke-linecap="round"/></g>`;
+s+=`<path id="axB" class="grow" d="M665 1060 L665 560" stroke="#23A876" stroke-width="10" stroke-linecap="round" fill="none" stroke-dasharray="510" stroke-dashoffset="510"/>`;s+=`<g id="fb0" class="pop tapme" data-tap="1"><circle cx="665" cy="528" r="52" fill="transparent"/>${mini(665,528,36)}</g>`;
+const FB=[[660,-1,598,598,27],[670,1,732,606,23],[800,-1,598,745,12],[810,1,732,752,9]];
+FB.forEach(([y,sd,x,y2,r],i)=>{s+=`<g id="fb${i+1}" class="pop tapme" data-tap="1"><circle cx="${x}" cy="${y2}" r="44" fill="transparent"/><path d="M665 ${y} Q${665+sd*45} ${y-10} ${x} ${y2+14}" stroke="#23A876" stroke-width="4" fill="none"/>${r>16?mini(x,y2,r):`<g transform="translate(${x} ${y2+8}) rotate(${sd*30})">${budAt(r)}</g>`}</g>`});
+const age=(x,y,n)=>`<circle cx="${x}" cy="${y}" r="18" fill="#E2A93B" stroke="#fff" stroke-width="3"/><text x="${x}" y="${y+7}" font-size="21" font-weight="800" fill="#2A1A00">${n}</text>`;
+s+=`<g id="abAge" class="fadeg" opacity="0">${age(129,970,1)}${age(341,880,2)}${age(133,790,3)}${age(718,488,1)}${age(548,598,2)}${age(782,606,3)}</g>`;
+s+=`<g id="abLab" class="fadeg" opacity="0"><rect x="60" y="225" width="350" height="56" rx="28" fill="#2B2240" stroke="#FFC857" stroke-width="3"/><text x="235" y="264" font-size="34" font-weight="800" fill="#FFD27A">RACEMOSE</text>
+<rect x="490" y="225" width="350" height="56" rx="28" fill="#2B2240" stroke="#FFC857" stroke-width="3"/><text x="665" y="264" font-size="34" font-weight="800" fill="#FFD27A">CYMOSE</text>
+<text x="235" y="1112" font-size="27" font-weight="700" fill="#F2FFFB">tip keeps growing</text><text x="235" y="1148" font-size="25" fill="#A9C9CF">oldest flower at bottom</text>
+<text x="665" y="1112" font-size="27" font-weight="700" fill="#F2FFFB">tip ends in a flower</text><text x="665" y="1148" font-size="25" fill="#A9C9CF">oldest flower at top</text></g>`;
+return s+`</g><path d="M450 170 V1160" stroke="#11A69A" stroke-opacity=".3" stroke-width="3" stroke-dasharray="8 12"/>`}
+const LAY={lyCal:[800,1000],lyCor:[788,800],lyAnd:[772,610],lyGyn:[755,430]};
+function flowerSVG(){const p=.42;let s=DEFS+ovBg();
+let cal='';for(let k=0;k<5;k++)cal+=`<path d="M0 -40 C70 -60 170 -40 230 0 C170 40 70 60 0 40Z" transform="rotate(${k*72+54})" fill="url(#gSep)" stroke="#0B5A3E" stroke-width="3"/>`;cal+=`<circle r="70" fill="#1E8A60"/>`;
+let cor='';for(let k=0;k<5;k++)cor+=`<ellipse cx="165" cy="0" rx="112" ry="84" transform="rotate(${k*72+18})" fill="url(#gPet)" stroke="#6A4BD8" stroke-opacity=".4" stroke-width="3"/>`;cor+=`<circle r="140" fill="url(#gPet)"/>`;for(let k=0;k<5;k++)cor+=`<path d="M40 0 L260 0" transform="rotate(${k*72+18})" stroke="#fff" stroke-opacity=".5" stroke-width="3"/>`;
+let st=[];for(let k=0;k<5;k++){const a=(k*72+90)*D,px=Math.cos(a)*58,py=Math.sin(a)*58*p;st.push({py,h:`<path d="M${f1(px)} ${f1(py)} L${f1(px*.78)} ${f1(py*.78-38)}" stroke="#9ED89A" stroke-width="7" stroke-linecap="round"/><path d="M${f1(px*.78)} ${f1(py*.78-38)} L${f1(px*.22)} ${f1(py*.22-150)}" stroke="#E8A70E" stroke-width="22" stroke-linecap="round"/><path d="M${f1(px*.78)} ${f1(py*.78-38)} L${f1(px*.22)} ${f1(py*.22-150)}" stroke="#FFD44D" stroke-width="15" stroke-linecap="round"/>`})}
+st.sort((a,b)=>a.py-b.py);
+const and=`<ellipse rx="64" ry="${f1(64*p)}" fill="none" stroke="#C08A10" stroke-opacity=".4" stroke-width="3"/>`+st.map(o=>o.h).join('');
+let ovl='';for(let k=0;k<10;k++){const a=k*36+18;if(Math.abs(((a+90)%180)-90)<14)continue;ovl+=`<circle cx="${f1(Math.cos(a*D)*21)}" cy="${f1(Math.sin(a*D)*21*.45)}" r="4.8" fill="#FFC93D" stroke="#8A5A0E" stroke-width="1"/>`}
+const gyn=`<path id="ovWall" class="fadeg" d="M-50 0 C-66 -42 -54 -104 0 -110 C54 -104 66 -42 50 0 Q0 12 -50 0Z" fill="url(#gOvary)" stroke="#1D7A5C" stroke-width="2" opacity=".95"/>
+<g id="ovIn" class="fadeg" opacity=".08"><path d="M0 -8 V-102" stroke="#fff" stroke-width="7" stroke-linecap="round"/>${[-30,-52,-74,-92].map(y=>`<circle cx="-12" cy="${y}" r="5" fill="#FFC93D"/><circle cx="12" cy="${y+6}" r="5" fill="#FFC93D"/><circle cx="-21" cy="${y+10}" r="4" fill="#FFC93D"/><circle cx="21" cy="${y-4}" r="4" fill="#FFC93D"/>`).join('')}
+<g transform="translate(0 -56)"><ellipse rx="46" ry="20" fill="#0E5A48" fill-opacity=".6" stroke="#fff" stroke-width="2.5"/><path d="M-46 0 H-13 M13 0 H46" stroke="#fff" stroke-width="2"/><ellipse rx="12" ry="6" fill="#fff"/>${ovl}</g></g>
+<path d="M0 -108 C2 -150 -2 -200 0 -238" stroke="#5BC08A" stroke-width="8" fill="none" stroke-linecap="round"/><ellipse cx="0" cy="-246" rx="17" ry="10" fill="#A8D83A" stroke="#5E8A10" stroke-width="1.5"/>
+<g><circle cx="-8" cy="-250" r="3.6" fill="#E8A70E"/><circle cx="5" cy="-247" r="3.2" fill="#E8A70E"/><circle cx="10" cy="-253" r="2.6" fill="#E8A70E"/><circle cx="-1" cy="-254" r="2.4" fill="#E8A70E"/></g>
+<rect class="clue" data-clue="p2a" x="-78" y="-120" width="156" height="136" fill="transparent"/><circle class="clue" data-clue="p2b" cx="0" cy="-248" r="46" fill="transparent"/>`;
+s+=`<rect id="flTap" class="tapme" data-tap="1" x="60" y="200" width="780" height="1000" fill="transparent"/>`;
+const ly=(id,inner)=>`<g id="${id}" class="ly" style="transform:translate(450px,${LAY[id][0]}px)"><g transform="scale(.8)">${inner}</g></g>`;
+s+=ly('lyCal',`<g transform="scale(1 ${p})">${cal}</g>`)+ly('lyCor',`<g transform="scale(1 ${p})">${cor}</g>`)+ly('lyAnd',and)+ly('lyGyn',gyn);
+const lab=(id,t,y,x2)=>`<g id="${id}" class="fadeg" opacity="0" font-family="Sora,sans-serif" font-weight="800" font-size="30"><path d="M${x2} ${y} L760 ${y}" stroke="#FFC857" stroke-width="3"/><circle cx="${x2}" cy="${y}" r="6" fill="#FFC857"/><rect x="762" y="${y-24}" width="128" height="0" fill="none"/><text x="888" y="${y+10}" text-anchor="end" fill="#F2FFFB" paint-order="stroke" stroke="#0C1C30" stroke-width="6">${t}</text></g>`;
+s+=lab('lbCal','CALYX',1000,640)+lab('lbCor','COROLLA',800,676)+lab('lbAnd','STAMENS',540,490)+lab('lbGyn','PISTIL',384,500);return s}
+function berrySVG(){let s=DEFS+ovBg()+`<g transform="translate(450 640)"><circle r="252" fill="#7A1028"/><circle r="240" fill="url(#gBerry)"/><circle r="206" fill="#F8737A" opacity=".55"/>
+<path d="M0 -206 V206" stroke="#FFB0A2" stroke-width="14"/><ellipse cx="-115" cy="0" rx="84" ry="146" fill="#FFE79A" opacity=".25"/><ellipse cx="115" cy="0" rx="84" ry="146" fill="#FFE79A" opacity=".25"/>
+<rect x="-26" y="-126" width="52" height="252" rx="26" fill="#FFD3C8"/><ellipse cx="-46" cy="0" rx="42" ry="94" fill="#FFD3C8"/><ellipse cx="46" cy="0" rx="42" ry="94" fill="#FFD3C8"/>`;
+for(const sd of[-1,1])for(let k=0;k<9;k++){const a=(-70+k*17.5)*D,x=sd*(46+Math.cos(a)*62),y=Math.sin(a)*118;s+=`<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="19" ry="14" fill="#F4FFB0" opacity=".35"/><ellipse cx="${f1(x)}" cy="${f1(y)}" rx="13" ry="9" transform="rotate(${f1(sd*(a/D))} ${f1(x)} ${f1(y)})" fill="#FFF4D6" stroke="#B88A3E" stroke-width="2"/>`}
+return s+`<rect class="clue" data-clue="p3b" x="-190" y="-170" width="380" height="340" fill="transparent"/></g>`}
+function seedSVG(){return DEFS+ovBg()+`<g transform="translate(450 640)"><path d="M-210 10 C-220 -150 -40 -200 80 -170 C220 -130 240 60 160 150 C60 250 -190 210 -210 10Z" fill="#F6E3B4" stroke="#B88A3E" stroke-width="8"/><path d="M-180 10 C-185 -125 -40 -165 75 -140 C195 -105 205 55 140 128 C55 215 -160 180 -180 10Z" fill="#FFF9EA"/>
+<path d="M-120 120 C-170 40 -150 -80 -40 -110 C70 -135 150 -60 130 30 C110 110 20 120 -20 70 C-50 30 -20 -30 30 -30" stroke="#5FD08A" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M-120 120 C-170 40 -150 -80 -40 -110 C70 -135 150 -60 130 30 C110 110 20 120 -20 70 C-50 30 -20 -30 30 -30" stroke="#E6FFEE" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+<circle cx="-120" cy="120" r="34" fill="none" stroke="#E2A93B" stroke-width="4" class="pulse"/></g>
+<g font-family="Sora,sans-serif" font-weight="800" font-size="30" fill="#F2FFFB"><path d="M300 800 L200 900" stroke="#FFC857" stroke-width="3"/><text x="90" y="940">EMBRYO'S FIRST ROOT</text><path d="M560 520 L700 420" stroke="#FFC857" stroke-width="3"/><text x="560" y="400">CURLED EMBRYO</text></g>`}
+function growSVG(){let s=DEFS+`<rect width="900" height="1600" fill="url(#gOvBg)"/><ellipse cx="450" cy="700" rx="420" ry="560" fill="url(#gGlow)"/><ellipse cx="300" cy="100" rx="500" ry="300" fill="url(#gSun)"/><rect x="0" y="1080" width="900" height="520" fill="url(#gGel)" opacity=".85"/><path d="M0 1080H900" stroke="#fff" stroke-width="3"/>`;
+s+=`<ellipse id="gSeed" cx="450" cy="1095" rx="20" ry="14" fill="#F6E3B4" stroke="#B88A3E" stroke-width="3"/>`;
+s+=`<path id="gRad" class="grow" d="M450 1105 C452 1170 446 1240 450 1320" stroke="#FFF4D6" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="230" stroke-dashoffset="230" style="transition-duration:1.8s"/>`;
+s+=`<path id="gRad2" class="grow" d="M450 1160 Q400 1170 370 1220 M450 1190 Q500 1200 530 1250 M450 1240 Q420 1255 400 1290" stroke="#FFF4D6" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="400" stroke-dashoffset="400" style="transition-duration:2s"/>`;
+s+=`<path id="gStemP" class="grow" d="M450 1085 C446 900 456 650 450 400" stroke="#23A876" stroke-width="12" fill="none" stroke-linecap="round" stroke-dasharray="700" stroke-dashoffset="700" style="transition-duration:3s"/>`;
+[[960,-1,150],[840,1,140],[720,-1,125],[610,1,105],[510,-1,85]].forEach(([y,sd,L],i)=>{s+=`<g id="gl${i}" class="pop ${sd>0?'popl':'popr'}">${legAt(450,y,sd>0?-20:-160,L)}</g>`});
+return s+`<g id="gFl" class="pop"><g transform="translate(450 380) scale(1 .85)">${flowerFace(48)}</g></g>`}
+
+function potPlant(x,pat){let s=`<g id="tw_${pat}" class="tapme twin" data-tap="1"><rect x="${x-140}" y="380" width="280" height="780" fill="transparent"/>`;
+s+=`<path d="M${x-50} 1080 L${x+50} 1080 L${x+38} 1160 L${x-38} 1160Z" fill="#E59A6B"/><rect x="${x-56}" y="1066" width="112" height="18" rx="5" fill="#D4825A"/><path d="M${x} 1068 L${x} 460" stroke="#23A876" stroke-width="9" stroke-linecap="round"/>`;
+[980,860,740,620,510].forEach((y,i)=>{const sd=i%2?1:-1;s+=`<ellipse cx="${x}" cy="${y}" rx="8" ry="4" fill="#1A8E62"/>`;
+if(pat==='alt')s+=legAt(x,y,sd>0?-22:-158,80);
+else if(pat==='opp')s+=legAt(x,y,-22,80)+legAt(x,y,-158,80);
+else s+=legAt(x,y,-60,64,.55,.55)+legAt(x,y,-22,74)+legAt(x,y,-158,74)+legAt(x,y,-118,64,.55,.9)+`<ellipse cx="${x}" cy="${y}" rx="30" ry="9" fill="none" stroke="#E2A93B" stroke-width="2.5"/>`});
+return s+`<text class="xmark" x="${x}" y="760" text-anchor="middle" font-family="Sora,sans-serif" font-weight="800" font-size="150" fill="#E8564F" opacity="0">✕</text></g>`}
+function twinSVG(order){return DEFS+ovBg()+`<text x="450" y="230" text-anchor="middle" font-family="Sora,sans-serif" font-weight="800" font-size="44" fill="#F2FFFB">W’S LINE-UP</text><text x="450" y="290" text-anchor="middle" font-family="Sora,sans-serif" font-size="30" fill="#A9C9CF">Only one has her leaf pattern</text>`+order.map((p,i)=>potPlant(160+i*290,p)).join('')}
+function sliceSVG(){let s=DEFS+ovBg()+`<text x="450" y="230" text-anchor="middle" font-family="Sora,sans-serif" font-weight="800" font-size="44" fill="#C2334A">LASER SLICE</text><g transform="translate(450 640)"><circle r="232" fill="#D4F3E4" stroke="#1D7A5C" stroke-width="10"/><path d="M-232 0 H232" stroke="#1D7A5C" stroke-width="8"/><circle r="58" fill="#fff" stroke="#1D7A5C" stroke-width="6"/>`;
+for(let k=0;k<14;k++){const a=k*(360/14)+12;if(Math.abs(((a+90)%180)-90)<16)continue;const x=Math.cos(a*D)*104,y=Math.sin(a*D)*104;s+=`<path d="M${f1(Math.cos(a*D)*58)} ${f1(Math.sin(a*D)*58)} L${f1(x)} ${f1(y)}" stroke="#1D7A5C" stroke-width="4"/><circle cx="${f1(x)}" cy="${f1(y)}" r="22" fill="#E2A93B" stroke="#8A5A0E" stroke-width="3"/>`}
+return s+`</g>`}
+function scanPtsSVG(){const L2=LEAFGEO[2];return [['sc_root',450,1170],['sc_stem',sx(912),912],['sc_leaf',L2.x,L2.y],['sc_flower',sx(452),428]].map(([id,x,y])=>`<g id="${id}" class="tapme" data-tap="1"><circle cx="${f1(x)}" cy="${f1(y)}" r="64" fill="transparent"/><circle cx="${f1(x)}" cy="${f1(y)}" r="30" fill="#FFD27A" fill-opacity=".3" stroke="#FFB547" stroke-width="5" class="pulse"/><path d="M${f1(x-12)} ${f1(y)}H${f1(x+12)}M${f1(x)} ${f1(y-12)}V${f1(y+12)}" stroke="#FFC857" stroke-width="5" stroke-linecap="round"/></g>`).join('')}
+
+/* ---------- icons (used in choices + concept cards) ---------- */
+const lf=(x,y,a,l=16)=>{const cx=x+Math.cos(a*D)*l/2,cy=y+Math.sin(a*D)*l/2;return `<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="${l/2}" ry="${f1(l/4.2)}" transform="rotate(${a} ${f1(cx)} ${f1(cy)})" fill="#2FBF85" stroke="#0E6A4C" stroke-width=".6"/>`};
+const ic=inner=>`<svg viewBox="0 0 60 60" aria-hidden="true">${inner}</svg>`;
+const STM='<path d="M30 57V4" stroke="#1A8E62" stroke-width="2.6"/>';
+const I={
+alt:ic(STM+lf(30,46,-160)+lf(30,32,-20)+lf(30,18,-160)),
+opp:ic(STM+lf(30,42,-160)+lf(30,42,-20)+lf(30,20,-160)+lf(30,20,-20)),
+wh:ic(STM+[40,18].map(y=>lf(30,y,-160)+lf(30,y,-20)+lf(30,y,-118,11)+lf(30,y,-62,11)+`<ellipse cx="30" cy="${y}" rx="8" ry="2.6" fill="none" stroke="#E2A93B" stroke-width="1.2"/>`).join('')),
+ra:ic(`<path d="M30 57V9" stroke="#1A8E62" stroke-width="2.6"/><path d="M24 15 L30 7 L36 15" stroke="#11A69A" stroke-width="2.6" fill="none"/>${[[48,-1],[38,1],[28,-1],[19,1]].map(([y,s],i)=>`<circle cx="${30+s*11}" cy="${y}" r="${5-i}" fill="#9B7BFF"/>`).join('')}`),
+cy:ic(`<path d="M30 57V16" stroke="#1A8E62" stroke-width="2.6"/><circle cx="30" cy="12" r="8" fill="#9B7BFF"/><circle cx="30" cy="12" r="2.6" fill="#FFC93D"/><path d="M30 30 L19 24 M30 34 L41 28" stroke="#1A8E62" stroke-width="2"/><circle cx="18" cy="23" r="4.5" fill="#9B7BFF"/><circle cx="42" cy="27" r="3.2" fill="#7B5CE6"/>`),
+pA:ic(`<circle cx="30" cy="30" r="24" fill="#D4F3E4" stroke="#1D7A5C" stroke-width="2.5"/><path d="M8 20 Q5 30 8 40" stroke="#1D7A5C" stroke-width="5" fill="none"/>${[20,27,34,41].map((y,i)=>`<circle cx="${15+(i%2)*5}" cy="${y}" r="3.4" fill="#E2A93B"/>`).join('')}`),
+pB:ic(`<circle cx="30" cy="30" r="24" fill="#D4F3E4" stroke="#1D7A5C" stroke-width="2.5"/><path d="M6 30 H54" stroke="#1D7A5C" stroke-width="2"/><circle cx="30" cy="30" r="6" fill="#fff" stroke="#1D7A5C"/>${[30,70,110,150,210,250,290,330].map(a=>`<circle cx="${f1(30+Math.cos(a*D)*13)}" cy="${f1(30+Math.sin(a*D)*13)}" r="3.2" fill="#E2A93B"/>`).join('')}`),
+root:ic(`<path d="M30 6V54" stroke="#C99B52" stroke-width="4" stroke-linecap="round"/><path d="M30 20 L17 30 M30 24 L43 33 M30 34 L19 44 M30 38 L41 46" stroke="#C99B52" stroke-width="2.4" stroke-linecap="round"/>`),
+seed:ic(`<ellipse cx="30" cy="30" rx="18" ry="13" fill="#FFF4D6" stroke="#B88A3E" stroke-width="2.5"/><path d="M20 34 C16 22 30 18 36 26 C40 32 32 36 28 32" stroke="#5FD08A" stroke-width="4" fill="none" stroke-linecap="round"/>`),
+petal:ic(`${[0,72,144,216,288].map(a=>`<ellipse cx="40" cy="30" rx="10" ry="6" transform="rotate(${a} 30 30)" fill="#A78BFF"/>`).join('')}<circle cx="30" cy="30" r="5" fill="#FFC93D"/>`),
+pC:ic(`<circle cx="30" cy="30" r="24" fill="#D4F3E4" stroke="#1D7A5C" stroke-width="2.5"/><path d="M30 54 V47" stroke="#1D7A5C" stroke-width="3"/><circle cx="30" cy="42" r="6" fill="#E2A93B"/>`)
+};
+const ROOTZONES=`<svg class="big" viewBox="0 0 300 250" aria-hidden="true"><path d="M70 6 L70 196 Q70 236 90 242 Q110 236 110 196 L110 6Z" fill="#FFF4D6" stroke="#8C6A2C" stroke-width="2"/>
+<rect x="71" y="6" width="38" height="70" fill="#FFF0C4"/>${[14,24,34,44,54,64].map(y=>`<path d="M70 ${y} l-18 4 M110 ${y+4} l18 4" stroke="#8C6A2C" stroke-width="1.6"/>`).join('')}
+<rect x="71" y="78" width="38" height="62" fill="#FCE7B8"/>${[86,98,110,122,134].map(y=>`<path d="M71 ${y}H109" stroke="#B88A3E" stroke-width="1"/>`).join('')}
+<rect x="71" y="142" width="38" height="52" fill="#F4D58E"/>${[146,152,158,164,170,176,182,188].map(y=>`<path d="M71 ${y}H109" stroke="#A9772C" stroke-width=".8"/>`).join('')}<path d="M90 142V194" stroke="#A9772C" stroke-width=".8"/>
+<path d="M70 196 Q70 236 90 242 Q110 236 110 196Z" fill="#E0A64C" stroke="#8C6A2C" stroke-width="2"/>
+<g font-family="Sora,sans-serif"><g fill="#F2FFFB" font-weight="800" font-size="16"><text x="138" y="40">Maturation</text><text x="138" y="108">Elongation</text><text x="138" y="166">Meristematic</text><text x="138" y="224">Root cap</text></g>
+<g fill="#A9C9CF" font-size="13"><text x="138" y="58">root hairs absorb water</text><text x="138" y="126">cells stretch longer</text><text x="138" y="184">cells keep dividing</text><text x="138" y="242">protects the tip</text></g></g>
+<path d="M128 36H112 M128 104H112 M128 162H112 M128 220H104" stroke="#E2A93B" stroke-width="2"/></svg>`;
+
+/* ---------- clues + scanner ---------- */
+const CLUES={
+p1a:{part:1,name:'The engraved symbol',desc:'The base plate carried the answer all along: one leaf per node, switching sides. Alternate!',hint:'Look at the chamber’s base plate, right below the warning tag.'},
+p1b:{part:1,name:'The thirsty zone',desc:'Root hairs grow only in one region just behind the tip: the zone of maturation. That’s where water enters.',hint:'When the camera zooms into the root tip.'},
+p2a:{part:2,name:'The ovary’s secret',desc:'Inside the ovary, the ovules sat around a central axis, in separate chambers. That’s axile placentation.',hint:'When the pistil is highlighted, look at the ovary.'},
+p2b:{part:2,name:'Pollen on the stigma',desc:'Gold pollen grains were already on the stigma. This flower was pollinated. A fruit was on its way.',hint:'Look at the very top of the pistil.'},
+p3a:{part:3,name:'The calyx that stayed',desc:'The green calyx never fell off. It stays on the fruit: a persistent calyx.',hint:'Where the red fruit meets its stalk.'},
+p3b:{part:3,name:'Ovules became seeds',desc:'The seeds sit exactly where the ovules were, around the central axis. The ovary became the fruit, the ovules became seeds.',hint:'Inside the cut fruit.'}
+};
+const armed=new Set();let beepT=null,sparkFor=null;
+function clueEl(id){return document.querySelector(`[data-clue="${id}"]`)}
+function arm(id,on){const e=clueEl(id);if(e)e.classList.toggle('armed',on&&!S.found[id]);on?armed.add(id):armed.delete(id);if(!on&&sparkFor===id)sparkOff();updScan()}
+function disarmAll(){[...armed].forEach(id=>arm(id,false));armed.clear();updScan()}
+function pending(){return [...armed].find(id=>!S.found[id])}
+function updScan(){const p=pending();scanBtn.classList.toggle('on',!!p);if(p&&!beepT){sfx.beep();beepT=setInterval(()=>sfx.beep(),2600)}if(!p){clearInterval(beepT);beepT=null;sparkOff()}}
+function sparkOn(id){const e=clueEl(id);if(!e)return;sparkFor=id;spark.classList.add('on');(function follow(){if(sparkFor!==id)return;const r=e.getBoundingClientRect(),sr=stage.getBoundingClientRect(),u=sr.width/100,sz=Math.max(16*u,Math.min(Math.max(r.width,r.height),34*u));
+spark.style.width=spark.style.height=sz+'px';spark.style.left=(r.left-sr.left+r.width/2-sz/2)+'px';spark.style.top=(r.top-sr.top+r.height/2-sz/2)+'px';requestAnimationFrame(follow)})()}
+function sparkOff(){sparkFor=null;spark.classList.remove('on')}
+scanBtn.onclick=()=>{const p=pending();if(!p)return;sfx.click();sparkOn(p)};
+spark.onclick=()=>{if(sparkFor)found(sparkFor)};
+function evCount(){const n=Object.keys(CLUES).filter(k=>S.found[k]).length;$('#evBtn').textContent=`◆ ${n}/6`;return n}
+function found(id){if(S.found[id])return;S.found[id]=true;save();evCount();const e=clueEl(id);if(e)e.classList.remove('armed');sfx.chime();sparkOff();updScan();xp(50);confetti(14);
+const cl=CLUES[id];toast((S.pass[cl.part]||0)>1?'OH! Ye toh pehle hi dikhaya tha! 👀':'◆ Hidden clue found: '+cl.name,cl.desc,6500)}
+
+$('#evBtn').onclick=()=>{const n=evCount();toast(`${n} of 6 hidden clues`,n<6?'Each part hides two. When 🔍 Scan beeps, tap it.':'You found every hidden clue.')};
+$('#xpBtn').onclick=()=>toast(`⚡ ${S.xp} XP`,`Rank: ${rank()}. Hidden clues are worth +50 each.`);
+const RANKS=[[0,'Rookie'],[120,'Field Agent'],[260,'Plant Detective'],[420,'Master Botanist']];
+function rank(x=S.xp){let r=RANKS[0][1];for(const[v,n]of RANKS)if(x>=v)r=n;return r}
+function xp(n){S.xp=(S.xp||0)+n;save();$('#xpBtn').textContent=`⚡ ${S.xp}`;const e=el('div','xpf',`+${n} XP`);stage.appendChild(e);setTimeout(()=>e.remove(),1600);sfx.tick()}
+function confetti(n=28){const cols=['#FFC93D','#11A69A','#A78BFF','#FF8FB1','#2FC38A'];for(let i=0;i<n;i++){const c=el('div','cf');c.style.left=(Math.random()*100)+'%';c.style.background=cols[i%5];c.style.animationDuration=(1.4+Math.random()*1.2)+'s';c.style.animationDelay=(Math.random()*.3)+'s';stage.appendChild(c);setTimeout(()=>c.remove(),3000)}}
+let tapWait=null;
+function waitTap(ids,correct){return new Promise(res=>{const t=S.token;const els=ids.map(W).filter(Boolean);els.forEach(e=>e.classList.add('live'));let sk=null;
+const tm=setTimeout(()=>{if(t!==S.token||!tapWait)return;sk=el('button','skipb','Stuck? Skip ⏭');sk.onclick=()=>{if(tapWait)tapWait.res(correct||ids[0])};ui.appendChild(sk)},12000);
+tapWait={ids,res:id=>{if(t!==S.token)return;clearTimeout(tm);if(sk)sk.remove();els.forEach(e=>e.classList.remove('live'));tapWait=null;sfx.click();res(id)}}})}
+function hitAt(x,y,els){let best=null,ba=1e12;for(const e of els){const r=e.getBoundingClientRect();if(r.width<2||r.height<2)continue;const p=10;if(x>=r.left-p&&x<=r.right+p&&y>=r.top-p&&y<=r.bottom+p){const a=r.width*r.height;if(a<ba){ba=a;best=e}}}return best}
+function onPress(e){const pt=e.touches?e.touches[0]:e;if(!pt)return;if(A.ctx&&A.ctx.state!=='running'){try{A.ctx.resume()}catch(_){}}
+const tg=e.target;if(tg&&tg.closest&&tg.closest('button,input,.sheet,.machine,#home,#spark'))return;const x=pt.clientX,y=pt.clientY;
+if(tapWait){const h=hitAt(x,y,tapWait.ids.map(W).filter(Boolean));if(h){tapWait.res(h.id);return}}
+const c=hitAt(x,y,[...document.querySelectorAll('.clue.armed')]);if(c)found(c.dataset.clue)}
+if(window.PointerEvent)stage.addEventListener('pointerdown',onPress);else{stage.addEventListener('touchstart',onPress,{passive:true});stage.addEventListener('mousedown',onPress)}
+async function inst(text){capShow(text,'YOUR MOVE',false);await speak(text)}
+function termMsg(lines){const a=W('tmA'),b=W('tmW');if(!lines){a.style.display='';b.style.display='none';return}a.style.display='none';b.style.display='';b.innerHTML=lines.map((l,i)=>`<text x="776" y="${862+i*30}" fill="${i===lines.length-1?'#FF5A6A':'#fff'}">${l}</text>`).join('');sfx.glitch()}
+async function huntPause(id,ms=5200){const t0=performance.now();while(!S.found[id]&&performance.now()-t0<ms)await wait(250);if(S.found[id])await wait(1800)}
+
+/* ---------- UI components ---------- */
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
+function onNext(e){requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.add('on')))}
+const OOPS=['Nope! W would love that answer 😅','Close… but that’s a fake. Try again!','Hmm, the evidence says no. One more try?','Arre, not that one. Look again!'];
+const oops=()=>OOPS[Math.floor(Math.random()*OOPS.length)];
+function choose(q,sub,opts,correct,onWrong){return new Promise(res=>{let tries=0;const t=S.token;capOff();const w=el('div','sheet',`<div class="cq">${q}</div>${sub?`<div class="cs">${sub}</div>`:''}<div class="opts"></div><div class="cfb" aria-live="polite"></div>`);
+const box=w.querySelector('.opts');opts.forEach((o,oi)=>{const b=el('button','opt',`<span class="oi">${o.icon||''}</span><span class="ot"><b>EVIDENCE ${'ABCD'[oi]}</b>${o.label}</span>`);
+b.onclick=()=>{if(t!==S.token)return;if(o.k===correct){sfx.unlock();b.classList.add('right');box.querySelectorAll('.opt').forEach(x=>x.disabled=true);setTimeout(()=>{w.classList.remove('on');setTimeout(()=>{w.remove();res(tries)},450)},900)}
+else{tries++;sfx.soft();b.classList.add('wrong');b.disabled=true;w.querySelector('.cfb').textContent=oops();if(onWrong)onWrong()}};box.appendChild(b)});ui.appendChild(w);onNext(w)})}
+function buttons(list){return new Promise(res=>{const t=S.token;const w=el('div','sheet');const st=el('div','bstack');list.forEach(o=>{const b=el('button','btn'+(o.ghost?' ghost':''),o.label);b.onclick=()=>{if(t!==S.token)return;sfx.click();w.classList.remove('on');setTimeout(()=>w.remove(),400);res(o.k)};st.appendChild(b)});w.appendChild(st);ui.appendChild(w);onNext(w)})}
+function card(title,kicker,panels,cols){const c=el('div','card',`<h3>${title}</h3>${kicker?`<div class="k">${kicker}</div>`:''}<div class="cg" style="grid-template-columns:repeat(${cols||panels.length},1fr)">${panels.map(p=>`<div class="panel${p.hl?' hl':''}">${p.hl?'<i>SPECIMEN 07</i>':''}${p.svg}${p.label?`<b>${p.label}</b>`:''}${p.sub?`<span>${p.sub}</span>`:''}</div>`).join('')}</div>`);ui.appendChild(c);onNext(c);sfx.click();return c}
+function cardOff(c){if(!c)return wait(0);c.classList.remove('on');return wait(450).then(()=>c.remove())}
+const LOCK=`<svg viewBox="0 0 80 90"><path class="shk" d="M22 40 V26 a18 18 0 0 1 36 0 V40" stroke="#FFD27A" stroke-width="7" fill="none" stroke-linecap="round"/><rect x="10" y="40" width="60" height="46" rx="10" fill="#14324A" stroke="#FFD27A" stroke-width="3"/><circle cx="40" cy="60" r="6" fill="#FFD27A"/><path d="M40 63 V74" stroke="#FFD27A" stroke-width="4" stroke-linecap="round"/></svg>`;
+function lockShow(n){const l=el('div','lock',`${LOCK}<div class="lk-part">PART ${n}</div><div class="lk-state">LOCKED</div>`);ui.appendChild(l);onNext(l);sfx.thump(.35);return l}
+function board(part,primary,secondary){return new Promise(res=>{const t=S.token;const ids=Object.keys(CLUES).filter(k=>CLUES[k].part===part);const got=ids.filter(k=>S.found[k]).length;
+const items=ids.map(k=>S.found[k]?`<div class="ci got"><div class="cn">◆ ${CLUES[k].name}</div><div class="cd">${CLUES[k].desc}</div></div>`:`<div class="ci"><div class="cn">◇ Not found yet</div><div class="cd">Hint: ${CLUES[k].hint}</div></div>`).join('');
+const b=el('div','sheet',`<div class="bs" style="margin:0 0 calc(var(--u)*2);font-weight:800;color:#FFC857">${S.name?S.name+': ':''}⚡ ${S.xp} XP · Rank: ${rank()}</div><div class="bh">Hidden clues: ${got} of ${ids.length}</div><div class="bs">${got<ids.length?'Watch again. When 🔍 Scan beeps, a clue is on screen.':'Sharp eyes. Nothing escaped you.'}</div>${items}`);
+const row=el('div','bstack');[primary,secondary].filter(Boolean).forEach((o,i)=>{const x=el('button','btn'+(i?' ghost':''),o.label);x.onclick=()=>{if(t!==S.token)return;sfx.click();res(o.k)};row.appendChild(x)});b.appendChild(row);ui.appendChild(b);onNext(b)})}
+function idBar(from,to,dur=2400){return new Promise(async(res,rej)=>{const t=S.token;capOff();const b=el('div','idb',`<div class="idl">IDENTITY RECOVERY</div><div class="idv">${from}%</div><div class="idt"><i style="width:${from}%"></i></div>`);ui.appendChild(b);onNext(b);
+try{await wait(600)}catch(e){return rej(e)}const st=performance.now(),v=b.querySelector('.idv'),bar=b.querySelector('i');let lt=0;
+(function step(n){if(t!==S.token)return rej(ABORT);const k=Math.min(1,(n-st)/dur),val=Math.round(from+(to-from)*ease(k));v.textContent=val+'%';bar.style.width=val+'%';if(n-lt>90){sfx.tick();lt=n}if(k<1)requestAnimationFrame(step);else{sfx.unlock();setTimeout(()=>res(b),300)}})(st)})}
+
+/* ---------- scene helpers ---------- */
+function showOv(svg,ms=800){ov.innerHTML=svg;ov.getBoundingClientRect();ov.style.opacity=1;return wait(ms)}
+function hideOv(ms=800){ov.style.opacity=0;return wait(ms).then(()=>{ov.innerHTML=''})}
+const W=id=>document.getElementById(id);
+function setOp(id,v){const e=W(id);if(e)e.setAttribute('opacity',v)}
+function lit(id,ms=2200){const e=W(id);if(!e)return;e.setAttribute('filter','url(#glowF)');sfx.click();setTimeout(()=>e.removeAttribute('filter'),ms)}
+function plantMode(p){W('fruitG').style.display=p===3?'':'none';world.classList.remove('healed');termMsg(null);W('scanPts').innerHTML='';['rootG','stemG','leavesG','inflG','fruitG'].forEach(i=>{W(i).style.transition='opacity 1.2s';W(i).style.opacity=1});world.classList.remove('bp');setOp('bpGrid',0);W('badges').innerHTML='';W('bpL').innerHTML='';['ageG','nodeMk','nodeLb','leafLb'].forEach(i=>setOp(i,0))}
+function setHud(n){S.part=n;$('#hudPart').textContent=`Part ${n} of 3`;hud.classList.add('on')}
+function resetAll(){disarmAll();heart(false);ui.innerHTML='';tw.innerHTML='';capOff();camTag('');ov.style.opacity=0;ov.innerHTML='';stage.classList.remove('glitch');toastEl.classList.remove('on');tapWait=null;if(window.speechSynthesis)speechSynthesis.cancel()}
+function leafLabels(){const g=LEAFGEO[1],x=sx(872);W('leafLb').innerHTML=`<path d="M${f1((x+g.ex)/2)} ${f1(g.ey+12)} L500 902" stroke="#FFC857" stroke-width="2"/><text x="500" y="920" fill="#FFC857">PETIOLE (stalk)</text>
+<path d="M${f1(g.x+10)} ${f1(g.y-18)} L600 774" stroke="#5BF0B0" stroke-width="2"/><text x="560" y="768" fill="#5BF0B0">LAMINA (blade)</text>
+<path d="M${f1(g.x+30)} ${f1(g.y+4)} L640 868" stroke="#C9B6FF" stroke-width="2"/><text x="600" y="886" fill="#C9B6FF">VEINS</text>`}
+
+/* ================= PART 1: THE PLANT WITH NO NAME ================= */
+async function scanRoot(){
+sfx.whoosh(.2);await camTo({x:450,y:1140,s:2.2},2000);
+await say('One boss root diving straight down, and all its side-kicks branching off. A tap root!',200,'SCAN: ROOT');
+arm('p1b',true);await camTo({x:450,y:1262,s:6.5},2200);
+await say('Zoom into the tip. Something down here is growing… hair? Literally.',200,'SCAN: ROOT TIP');
+await huntPause('p1b',4200);
+const c=card('ROOT TIP: 4 ZONES','Only one zone grows root hairs',[{svg:ROOTZONES}],1);
+await say('Cap in front like a helmet. Behind it, cells divide, stretch, then mature. Only the mature zone grows hairs to drink water.',900);
+await cardOff(c);arm('p1b',false)}
+async function scanStem(){
+await camTo({x:452,y:860,s:2.3},2000);setOp('nodeMk',1);setOp('nodeLb',1);sfx.click();
+await say('Every leaf plugs in at a node. The gap between two nodes? Internode.',200,'SCAN: STEM');
+await say('And those tiny buds above each leaf are branches waiting on standby.',700,'SCAN: STEM');
+setOp('nodeLb',0);setOp('nodeMk',0)}
+async function scanLeaf(){
+const lg=LEAFGEO[1];await camTo({x:lg.x+14,y:lg.y+24,s:3.1},2000);setOp('leafLb',1);sfx.click();
+await say('Stalk, blade, veins. Basically a solar panel with its own plumbing.',800,'SCAN: LEAF');
+setOp('leafLb',0)}
+async function part1(){
+setHud(1);plantMode(1);hud.classList.remove('on');leafLabels();
+blackEl.style.transition='none';blackEl.style.opacity=1;setCam({x:-560,y:1060,s:1.45,blur:0});
+amb({hum:.06,air:.05,bed:.04},2);await wait(800);
+await typeLine('BOTANICAL RESEARCH LAB','t-lab');await wait(600);
+await typeLine('SPECIMEN 07','t-big');await wait(500);
+await typeLine('STATUS: UNIDENTIFIED','t-warn');await wait(1100);
+await tClear(400);
+for(const v of[.2,1,.5,1,.15,.8,0]){sfx.buzz();blackEl.style.transition='none';blackEl.style.opacity=v;await wait(v?110:180)}
+hud.classList.add('on');
+camTo({x:-180,y:1000,s:1.35},5000);
+await say(`Oh! A human! Finally. Hi ${NM()}! I’m Sprout, this lab’s AI.`,200);
+await say('Something terrible happened here. Every single plant… dead.',500);
+sfx.whoosh(.25);await camTo({x:450,y:880,s:1.05},2600);lit('plant',2000);
+await say('Except her. Specimen 07. The last one alive.',600);
+await camTo({x:776,y:900,s:3},2000);
+await say('And someone deleted her entire record. Name, family, everything. Gone.',300);
+await camTo({x:585,y:1200,s:3.2},2000);
+await say('They left only this warning. Hmm. Suspicious.',200);
+arm('p1a',true);
+if(!S.found.p1a){await say('Wait… my scanner is beeping! Something is hidden right here. Tap 🔍 Scan, then tap the sparkle.',200);await huntPause('p1a',14000);if(!S.found.p1a){sparkOn('p1a');await huntPause('p1a',7000)}}
+else await wait(1200);
+arm('p1a',false);
+if(S.found.p1a)await say(`Nice, ${NM()}! You’re a natural. Hold on to that symbol. It means something.`,300);
+await camTo({x:450,y:860,s:.95},2200);
+await say('Whoever did this forgot one thing. The plant itself is the record. Let’s scan her!',300);
+/* GAME 1: free scan */
+W('scanPts').innerHTML=scanPtsSVG();const done=new Set();
+while(done.size<3){
+ await inst(done.size?'Tap another glowing point.':'Tap any glowing point to scan it.');
+ const id=await waitTap(['sc_root','sc_stem','sc_leaf','sc_flower'].filter(i=>!done.has(i)),['sc_root','sc_stem','sc_leaf'].find(i=>!done.has(i)));
+ if(id==='sc_flower'){sfx.buzz();await say('Arre! The tag literally says don’t identify from the flower. Nice try though 😄',400);continue}
+ done.add(id);W(id).style.display='none';
+ if(id==='sc_root')await scanRoot();else if(id==='sc_stem')await scanStem();else await scanLeaf();
+ xp(10);await camTo({x:450,y:860,s:.95},1800)}
+W('scanPts').innerHTML='';
+await say('Scan saved! Tap root, nodes, simple leaves. But how do her leaves sit on the stem? That’s the real clue.',300);
+/* GAME 2: spot the twin */
+camTag('MEMORISE');setCam({x:450,y:960,s:2.6});setOp('nodeMk',1);
+capShow('Watch how many leaves sit at each node.','10 SECONDS',false);
+await camTo({x:450,y:600,s:2.6},5200);setOp('nodeMk',0);camTag('');
+await say('Uh oh. W planted fakes to confuse us.',200);
+const order=['alt','opp','wh'].sort(()=>Math.random()-.5);
+await showOv(twinSVG(order),700);
+let tries=0;
+while(true){await inst('Tap the plant that has HER leaf pattern.');const id=await waitTap(order.map(p=>'tw_'+p),'tw_alt');
+ if(id==='tw_alt')break;tries++;W(id).classList.add('wilted');W(id).querySelector('.xmark').setAttribute('opacity',1);sfx.soft();
+ await say(id==='tw_opp'?'Fake! That one has leaves in pairs. W, you sneaky…':'Fake! That one has a whole ring of leaves at each node.',200)}
+lit('tw_alt',2400);sfx.unlock();confetti();xp(tries?15:30);
+await say(tries?`Got her twin, ${NM()}! Ekdum sahi.`:`First try, ${NM()}! Okay, I’m impressed.`,300);
+const c=card('3 PATTERNS UNLOCKED','You beat W’s line-up',[{svg:I.alt,label:'Alternate',sub:'1 leaf per node',hl:1},{svg:I.opp,label:'Opposite',sub:'2 per node'},{svg:I.wh,label:'Whorled',sub:'3+ per node'}]);
+await say('Her pattern: alternate. One leaf per node, switching sides. The fakes were opposite and whorled.',1000);
+await cardOff(c);await hideOv(600);
+if(S.found.p1a)await say('Remember the symbol on the base plate? One leaf, switching sides. It was the answer all along!',300);
+await idBar(0,24);await wait(700);ui.innerHTML='';
+/* cliffhanger */
+await camTo({x:776,y:900,s:3},1600);termMsg(['NICE TRY.','YOU WILL NEVER','FIND HER NAME.','— W']);
+await wait(1800);
+await say(`W?! Who is W? ${NM()}, how are they watching us?`,600);
+await say('Okay. Her leaves told us how she grows. Her flowers might tell us who she is.',300);
+setCam({x:448,y:500,s:4,blur:12});capOff();
+const lk=lockShow(2);await wait(900);
+const a=await board(1,{k:'next',label:'Unlock Part 2'},{k:'again',label:'Replay Part 1'});
+if(a==='next'){S.unlocked=Math.max(S.unlocked,2);save();cls(ui.querySelector('.sheet'),'remove');lk.classList.add('open');sfx.unlock();await wait(1000);go(2,true)}else go(1)}
+
+/* ================= PART 2: THE FLOWER CODE ================= */
+async function peel(){
+const L=['lyCal','lyCor','lyAnd','lyGyn'],LB=['lbCal','lbCor','lbAnd','lbGyn'];
+L.forEach(id=>{W(id).style.transform=`translate(450px,${LAY[id][0]}px)`;W(id).style.opacity=1});LB.forEach(i=>setOp(i,0));
+const q=[['lyCal','lbCal','LAYER 1: CALYX','Calyx! The green bodyguards that wrapped the bud.'],['lyCor','lbCor','LAYER 2: COROLLA','Corolla! The petals. Pure marketing for bees.'],['lyAnd','lbAnd','LAYER 3: ANDROECIUM','Androecium! The stamens, her pollen factory.'],['lyGyn','lbGyn','THE CORE: GYNOECIUM','The core! Gynoecium, the pistil. That swollen base is the ovary.']];
+for(let i=0;i<4;i++){const[id,lb,head,line]=q[i];
+ if(i<3){await inst(i?'Tap again. Peel the next layer!':'Tap the flower to peel its outer layer.');await waitTap(['flTap'],'flTap')}
+ sfx.whoosh(.2);for(let j=0;j<=i;j++)W(L[j]).style.transform=`translate(450px,${LAY[L[j]][1]}px)`;
+ if(i===2)W('lyGyn').style.transform=`translate(450px,${LAY.lyGyn[1]}px)`;
+ L.forEach((x,j)=>W(x).style.opacity=j===i||i===3&&j===3?1:.35);setOp(lb,1);
+ if(i>=2)arm('p2b',true);await wait(900);xp(5);
+ await say(line,300,head)}
+arm('p2a',true);W('ovWall').setAttribute('opacity',.45);W('ovIn').setAttribute('opacity',1);sfx.swell();
+await say('Wait. Something’s glowing inside the ovary…',200);
+await huntPause('p2a',4200);W('ovWall').setAttribute('opacity',.95);W('ovIn').setAttribute('opacity',.08);arm('p2a',false);arm('p2b',false)}
+async function part2(cont){
+setHud(2);plantMode(2);amb({hum:.04,air:.05,bed:.04},2);termMsg(['NICE TRY.','YOU WILL NEVER','FIND HER NAME.','— W']);W('tmW').querySelectorAll('text');
+if(!cont){blackEl.style.transition='none';blackEl.style.opacity=1;setCam({x:448,y:500,s:4,blur:12});await wait(300);black(false,1400)}else blackEl.style.opacity=0;
+await wait(400);await camTo({x:442,y:500,s:3,blur:0},2600);setOp('ageG',0);
+await say('Her flowers! A whole cluster. But W locked them with a bloom code.',200);
+await say('To crack it, you need to know which flower bloomed first. Practice round!',200);
+/* GAME 3: bloom order */
+await showOv(abSVG(),700);
+W('axA').style.transitionDuration='7s';W('axA').style.strokeDashoffset=0;W('axB').style.strokeDashoffset=0;
+[970,880,790,700,615,535,460].forEach((y,i)=>setTimeout(()=>cls(W('fa'+i),'add'),(1060-y)/740*7000+300));
+setTimeout(()=>cls(W('apA'),'add'),7100);setTimeout(()=>cls(W('fb0'),'add'),2600);[1,2,3,4].forEach(i=>setTimeout(()=>cls(W('fb'+i),'add'),3000+i*900));
+capShow('Watch closely. Which flower pops up first on each plant?','WATCH',false);
+await wait(8000);
+let tries=0;
+while(true){await inst('Plant A: tap the flower that bloomed FIRST.');const id=await waitTap(['fa0','fa1','fa2','fa3','fa4','fa5','fa6'],'fa0');if(id==='fa0')break;tries++;sfx.soft();await say('That one’s a baby! Plant A started blooming from somewhere else…',100)}
+sfx.unlock();xp(tries?8:15);
+tries=0;
+while(true){await inst('Plant B: tap the flower that bloomed FIRST.');const id=await waitTap(['fb0','fb1','fb2','fb3','fb4'],'fb0');if(id==='fb0')break;tries++;sfx.soft();await say('Nope, younger one. Where did Plant B’s first flower appear?',100)}
+sfx.unlock();xp(tries?8:15);confetti(18);
+setOp('abLab',1);setOp('abAge',1);
+await say(`Code cracked, ${NM()}! Plant A keeps growing upward, oldest at the bottom: racemose.`,200,'RACEMOSE');
+await say('Plant B ends in a flower, oldest at the top: cymose.',500,'CYMOSE');
+await hideOv(600);
+await camTo({x:442,y:500,s:3.2},1200);
+tries=0;
+while(true){await inst('Now HER code. Tap her oldest flower.');const id=await waitTap(['cf1','cf2','cf3','cf4'],'cf1');if(id==='cf1')break;tries++;sfx.soft();await say('Hmm, that one’s still young. Which one is fully open?',100)}
+setOp('ageG',1);sfx.unlock();confetti();xp(tries?10:20);
+tLine('BLOOM CODE CRACKED: CYMOSE','t-mid gold');await wait(1700);await tClear(400);setOp('ageG',0);
+/* GAME 4: peel the flower */
+sfx.whoosh(.45);await camTo({x:451,y:430,s:13,blur:4},1800);
+await showOv(flowerSVG(),700);setCam({blur:0});
+await say('Whoa. Her flower isn’t just a flower. It’s a four-layer lock!',200);
+await peel();
+/* GAME 5: laser memory */
+await say('W hid something inside that ovary. Let’s slice it with the laser. Careful: it fires only once!',200);
+await buttons([{k:'fire',label:'🔦 Fire the laser'}]);
+ov.insertAdjacentHTML('beforeend','<rect id="laser" x="0" y="0" width="900" height="10" fill="#FF3B5C" style="transform:translateY(300px);transition:transform 1s linear" filter="url(#glowF)"/>');
+W('laser').getBoundingClientRect();W('laser').style.transform='translateY(820px)';noiseHit(1,1200,4000,.25);await wait(1100);
+ov.style.transition='none';ov.innerHTML=sliceSVG();ov.style.opacity=1;sfx.click();await wait(2300);
+stage.classList.add('glitch');sfx.glitch();await wait(500);stage.classList.remove('glitch');ov.innerHTML='';ov.style.transition='';
+tLine('LASER OVERHEATED!','t-mid');await wait(1200);await tClear(300);
+const flash=async()=>{ov.style.transition='none';ov.innerHTML=sliceSVG();ov.style.opacity=1;await new Promise(r=>setTimeout(r,1600));ov.style.opacity=0;ov.style.transition=''};
+tries=await choose('WHAT DID THE LASER SHOW?','Where were the ovules?',[{k:'A',label:'Along one edge',icon:I.pA},{k:'B',label:'Around a central axis',icon:I.pB},{k:'C',label:'At the base',icon:I.pC}],'B',flash);
+ov.innerHTML='';xp(tries?15:30);confetti();
+const c=card('PLACENTATION UNLOCKED','How ovules sit inside an ovary',[{svg:I.pA,label:'Marginal',sub:'one edge. Pea'},{svg:I.pB,label:'Axile',sub:'central axis. Tomato, lemon',hl:1},{svg:I.pC,label:'Basal',sub:'at the base. Sunflower'}]);
+await say(`${NM()}, memory like a hard disk! Her ovules sit around a central axis. That’s axile.`,1000);
+await cardOff(c);
+setCam({x:450,y:820,s:1.2,blur:0});
+await idBar(24,61);await wait(800);ui.innerHTML='';
+/* W strikes */
+await camTo({x:776,y:900,s:3},1400);termMsg(['TOO CLOSE.','GOODBYE,','SPECIMEN 07.','— W']);await wait(1500);
+await camTo({x:450,y:820,s:1.2},1000);
+stage.classList.add('glitch');sfx.glitch();await wait(800);blackEl.style.transition='none';blackEl.style.opacity=1;stage.classList.remove('glitch');amb({hum:0,air:0,bed:0},.3);
+await wait(800);
+await say('No no no no… she’s gone!',700);
+await say(`Wait. WAIT. ${NM()}, I backed up everything you found…`,600);capOff();
+blackEl.style.transition='opacity 1s';blackEl.style.opacity=.45;amb({bed:.04},2);
+const lk=lockShow(3);await wait(900);
+const a=await board(2,{k:'next',label:'Unlock Part 3'},{k:'again',label:'Replay Part 2'});
+if(a==='next'){S.unlocked=Math.max(S.unlocked,3);save();cls(ui.querySelector('.sheet'),'remove');lk.classList.add('open');sfx.unlock();await wait(1000);go(3,true)}else go(2)}
+
+/* ================= PART 3: THE IDENTITY ================= */
+function idMachine(){const m=el('div','machine',`<h3>IDENTITY MACHINE</h3><div class="chips"><span>Tap root</span><span>Alternate</span><span>Cymose</span><span>Axile</span><span>Berry</span></div><div class="mscreen"><div class="spin">READY</div><div class="log"></div></div>`);ui.appendChild(m);onNext(m);return m}
+async function part3(){
+setHud(3);plantMode(3);hud.classList.remove('on');termMsg(['TOO CLOSE.','GOODBYE,','SPECIMEN 07.','— W']);
+const parts=['rootG','stemG','leavesG','inflG','fruitG'];parts.forEach(i=>{W(i).style.transition='none';W(i).style.opacity=0});
+blackEl.style.transition='none';blackEl.style.opacity=1;setCam({x:450,y:860,s:.95,blur:0});
+amb({hum:0,air:0,bed:0},1);await wait(1000);
+heart(true);await say('Backup loading… 3… 2… 1…',600);
+black(false,1600);await wait(1700);hud.classList.add('on');heart(false);amb({bed:.05,air:.04},2);
+await say(`${NM()}, the backup is built from your clues. Help me rebuild her, piece by piece!`,200);
+/* GAME 6: rebuild */
+const R=[[['rootG'],{x:450,y:1110,s:1.5},'Her roots are missing!','root'],[['stemG','leavesG'],{x:450,y:760,s:1.15},'No stem, no leaves!','alt'],[['inflG'],{x:445,y:470,s:2.2},'Her flowers are missing!','cy'],[['fruitG'],{x:520,y:740,s:2.6},'Something grew from her ovary… rebuild it!','ax']];
+const ALL=[{k:'root',label:'Tap root',icon:I.root},{k:'alt',label:'Alternate leaves',icon:I.alt},{k:'cy',label:'Cymose flowers',icon:I.cy},{k:'ax',label:'Axile ovary',icon:I.pB}];
+for(let i=0;i<R.length;i++){const[ids,cv,line,key]=R[i];ids.forEach(x=>{W(x).style.transition='opacity .6s';W(x).style.opacity=.14});
+ await camTo(cv,1500);await say(line,100);
+ const t=await choose(`REBUILD ${i+1}/4`,'Which piece of evidence fixes this?',[...ALL].sort(()=>Math.random()-.5),key);
+ ids.forEach(x=>{W(x).style.transition='opacity 1.2s';W(x).style.opacity=1});lit(ids[ids.length-1],1800);sfx.chime();xp(t?5:10);await wait(900)}
+await camTo({x:450,y:860,s:.95},1800);confetti();
+await say('She’s back! Every part rebuilt from your clues.',300);
+/* fruit + hidden calyx */
+arm('p3a',true);await camTo({x:520,y:738,s:4.2},1800);
+await say('And look, she grew a fruit. A berry! Something from her flower is still hanging on…',200,'FRUIT');
+await huntPause('p3a',4500);
+await buttons([{k:'cut',label:'✂ Cut the fruit open'}]);arm('p3a',false);
+noiseHit(.4,3000,800,.3);await showOv(berrySVG(),600);arm('p3b',true);
+const t=await choose('QUICK! WHERE DID THE OVULES GO?','Look inside the fruit',[{k:'A',label:'They became petals',icon:I.petal},{k:'B',label:'They became seeds',icon:I.seed},{k:'C',label:'They became roots',icon:I.root}],'B');
+xp(t?5:10);
+await say('Seeds! Sitting exactly where the ovules were. The ovary became the fruit.',200,'SEED');
+await huntPause('p3b',3500);arm('p3b',false);
+ov.style.opacity=0;await wait(400);ov.innerHTML=seedSVG();ov.style.opacity=1;await wait(500);
+await say('And inside every seed? A baby plant, curled up, already pointing its first root down. Cute.',500,'SEED');
+await hideOv(500);
+/* GAME 7: identity machine */
+await camTo({x:450,y:900,s:.9},1500);
+await say(`Okay ${NM()}. Time to feed everything into the Identity Machine.`,100);
+const m=idMachine();
+await buttons([{k:'go',label:'⚡ IDENTIFY HER'}]);
+const sp=m.querySelector('.spin'),log=m.querySelector('.log');
+const fams=['Fabaceae','Liliaceae','Brassicaceae','Solanaceae','Malvaceae','Poaceae'];
+const spin=async(stop,ms)=>{const t0=performance.now();let i=0;while(performance.now()-t0<ms){sp.textContent=fams[i++%fams.length];sfx.tick();await wait(80)}sp.textContent=stop};
+await spin('Fabaceae?',1300);log.insertAdjacentHTML('beforeend','<div class="no">✕ Fabaceae (pea family)</div><small>ovules along one edge. Not her.</small>');sfx.soft();await wait(1200);
+await spin('Liliaceae?',1100);log.insertAdjacentHTML('beforeend','<div class="no">✕ Liliaceae (lily family)</div><small>parallel veins, flower parts in threes. Not her.</small>');sfx.soft();await wait(1200);
+await spin('Solanaceae!',1500);log.insertAdjacentHTML('beforeend','<div class="yes">✓ SOLANACEAE (potato family)</div><small>every single clue matches.</small>');sfx.unlock();confetti(36);
+await say('Solanaceae! Same family as potato, tomato and brinjal.',900);
+m.classList.remove('on');await wait(400);m.remove();
+await idBar(61,100);await wait(500);ui.innerHTML='';
+/* the lab heals */
+await camTo({x:450,y:880,s:.78},1800);
+await say('Her name is back in the system. And look… something’s happening.',200);
+const sw=$('#sweep');sw.classList.remove('go');sw.getBoundingClientRect();sw.classList.add('go');
+world.classList.add('healed');termMsg(null);
+[0,400,800,1200,1600].forEach((d,i)=>setTimeout(()=>tone(523.25*Math.pow(1.26,i%4),1.2,'sine',.05,0,.8),d));confetti(40);
+await wait(2600);
+await say(`The whole lab is coming back to life! ${NM()}, you didn’t just name her. You saved everyone.`,800);
+xp(50);
+/* W returns */
+await camTo({x:776,y:900,s:3},1500);termMsg(['LUCKY.','213 MORE','ARE HIDDEN.','— W']);await wait(1600);
+await say(`213 more?! ${NM()}… you in?`,600);
+await finale()}
+async function finale(){
+capOff();await black(true,900);hud.classList.remove('on');amb({bed:.06},1);
+tLine('CASE 07: CLOSED','t-big gold');sfx.unlock();await wait(700);tLine(`Solved by ${S.name||'Detective'}`,'t-mid');await wait(1000);
+tLine(`Rank: ${rank()} ⚡ ${S.xp} XP`,'t-sub');await wait(2000);
+tLine('Case file: Morphology of flowering plants','t-sub');await wait(2200);await tClear(500);
+tLine('YOUR NEXT SPECIMEN IS WAITING.','t-mid gold');await wait(2600);await tClear(500);
+blackEl.style.opacity=.35;amb({bed:0},3);
+const a=await board(3,{k:'home',label:'Back to the case files'},{k:'again',label:'Replay Part 3'});
+if(a==='again')go(3);else{ui.innerHTML='';showHome()}}
+
+/* ---------- navigation ---------- */
+function go(n,cont=false){S.token++;resetAll();S.pass[n]=(S.pass[n]||0)+1;save();const f=n===1?part1:n===2?()=>part2(cont):part3;f().catch(e=>{if(e!==ABORT)console.error(e)})}
+function showHome(){S.token++;resetAll();hud.classList.remove('on');plantMode(1);setCam({x:450,y:760,s:1.05,blur:0});blackEl.style.opacity=0;
+$('#nm').value=S.name||'';const box=$('#parts');box.innerHTML='';$('#xpBtn').textContent=`⚡ ${S.xp}`;[1,2,3].forEach(n=>{const lockd=n>S.unlocked;const b=el('button','pbtn'+(n===1?' first':''),`<span><small>PART ${n}</small>${PARTNAMES[n]}</span><span>${lockd?'🔒':'▶'}</span>`);b.disabled=lockd;
+b.onclick=()=>{S.name=cleanName($('#nm').value);save();unlockAudio();$('#home').classList.add('off');sfx.click();go(n);setTimeout(()=>{if(!window.speechSynthesis||!speechSynthesis.getVoices().length)toast('Sprout’s voice isn’t available here','Captions will guide you. For voice, open the link in Chrome or Safari.',5500)},3000)};box.appendChild(b)});$('#home').classList.remove('off')}
+$('#menuBtn').onclick=()=>{if(ui.querySelector('.menu'))return;sfx.click();capOff();const n=S.part,m=el('div','sheet menu',`<div class="bh">Menu</div>`);const st=el('div','bstack');
+const add=(label,fn,ghost)=>{const b=el('button','btn'+(ghost?' ghost':''),label);b.onclick=()=>{m.remove();fn()};st.appendChild(b)};
+add('↻ Restart Part '+n,()=>go(n));if(n<3)add('⏭ Skip to Part '+(n+1),()=>{S.unlocked=Math.max(S.unlocked,n+1);save();go(n+1)});
+add('⌂ Back to the case files',()=>showHome(),true);add('✕ Close menu',()=>{},true);m.appendChild(st);ui.appendChild(m);onNext(m)};
+$('#soundBtn').onclick=e=>{const b=e.currentTarget;if(S.voice&&S.sound){S.voice=false;b.textContent='🔈';toast('Voice off','Sound effects still on.',1800)}else if(S.sound){S.sound=false;b.textContent='🔇';toast('Muted','Captions still show everything.',1800)}else{S.voice=true;S.sound=true;b.textContent='🔊';toast('Sound on','Voice and effects.',1600)}
+if(!S.voice&&window.speechSynthesis)speechSynthesis.cancel();if(A.ctx)A.master.gain.setTargetAtTime(S.sound?.9:0,A.ctx.currentTime,.1)};
+world.innerHTML=worldSVG();fit();addEventListener('resize',fit);applyCam();evCount();showHome();
+})();
+</script>
+</body>
+</html>
