@@ -303,7 +303,8 @@ body{background:#081322;color:var(--ink)}
     <label class="nml" for="nm">YOUR NAME, DETECTIVE</label><input id="nm" maxlength="18" autocomplete="off" placeholder="Type your name">
     <button class="chrow" id="chRow" style="display:none"></button>
     <div class="parts" id="parts"></div>
-    <div class="tip">Opened inside WhatsApp? Tap ⋮ and choose “Open in browser” (Chrome/Safari) for sound and Sprout’s voice.</div>
+    <button class="pill" id="testSnd" style="margin-top:calc(var(--u)*3);font-size:calc(var(--u)*3.8);padding:calc(var(--u)*2) calc(var(--u)*4)">🔊 Test sound</button>
+    <div class="tip">On a computer? Check the volume and that this tab isn’t muted. Opened inside WhatsApp? Tap ⋮ and choose “Open in browser” (Chrome/Safari) for sound and Sprout’s voice.</div>
   </div>
 </div>
 <script>
@@ -335,7 +336,7 @@ ctx.fillStyle=`rgba(${p.c},${Math.max(0,a)})`;ctx.beginPath();ctx.arc(x,y,p.r,0,
 /* ---------- audio ---------- */
 const A={ctx:null};
 function audioInit(){if(A.ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const C=new AC();A.ctx=C;
-A.master=C.createGain();A.master.gain.value=S.sound?.9:0;A.master.connect(C.destination);
+A.master=C.createGain();A.master.gain.value=S.sound?1:0;A.master.connect(C.destination);
 const len=C.sampleRate*2.4,ib=C.createBuffer(2,len,C.sampleRate);for(let ch=0;ch<2;ch++){const d=ib.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6)}
 A.rev=C.createConvolver();A.rev.buffer=ib;const rg=C.createGain();rg.gain.value=.45;A.rev.connect(rg);rg.connect(A.master);
 const nb=C.createBuffer(1,C.sampleRate*2,C.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;A.noise=nb;
@@ -407,16 +408,30 @@ function ME(){return CHARS[S.char]||CHARS.explorer}
 /* ---------- voices: Sprout and the student each get their own ---------- */
 const VO={sp:null,me:null};
 const FEM=/(female|Neerja|Veena|Lekha|Heera|Kalpana|Swara|Aditi|Sangeeta|Samantha|Karen|Moira|Tessa|Zira|Susan|Hazel|Serena|Kate|Fiona|Victoria)/i,MAL=/(\bmale|Prabhat|Rishi|Ravi|Hemant|Madhur|Daniel|Alex|Fred|David|Mark|George|Arthur|Oliver|Aaron)/i;
-function pickV(gen,avoid){const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));if(!vs.length)return null;
-const rank=v=>(/en[-_]IN/i.test(v.lang)?0:/GB/i.test(v.lang)?30:40)+(/(Natural|Neural|Google|Premium|Enhanced)/i.test(v.name)?0:5);
+const BAD=new Set();
+function pickV(gen,avoid){const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang)&&!BAD.has(v.name));if(!vs.length)return null;
+const rank=v=>(v.localService===false?25:0)+(/en[-_]IN/i.test(v.lang)?0:/GB/i.test(v.lang)?30:40)+(/(Natural|Neural|Google|Premium|Enhanced)/i.test(v.name)?0:5);
 const so=vs.slice().sort((a,b)=>rank(a)-rank(b)),re=gen==='f'?FEM:MAL;
 return so.find(v=>re.test(v.name)&&v!==avoid)||so.find(v=>v!==avoid&&/IN/i.test(v.lang))||so.find(v=>v!==avoid)||so[0]}
 function pickVoices(){if(!window.speechSynthesis)return;VO.sp=pickV('f',null);VO.me=pickV(ME().g,VO.sp)}
-if(window.speechSynthesis){pickVoices();speechSynthesis.onvoiceschanged=pickVoices}
-function speak(text,who='sp'){return new Promise(res=>{if(!S.voice||!window.speechSynthesis)return res();let done=false;const fin=()=>{if(!done){done=true;res()}};
-try{const u=new SpeechSynthesisUtterance(text.replace(/…/g,'... ').replace(/’/g,"'").replace(/[🔍😄👀⏭]/gu,'').replace(/\?!/g,'?'));
-let v=who==='me'?VO.me:VO.sp,p=1,r=1;if(who==='me'){const c=ME();p=c.pitch;r=c.rate;if(VO.me&&VO.me===VO.sp)p=c.g==='f'?1.22:.78}
-if(v){u.voice=v;u.lang=v.lang}else u.lang='en-IN';u.pitch=p;u.rate=r;u.onend=fin;u.onerror=fin;setTimeout(fin,1800+text.length*85);speechSynthesis.speak(u)}catch(e){fin()}})}
+if(window.speechSynthesis){pickVoices();speechSynthesis.onvoiceschanged=pickVoices;setInterval(()=>{try{if(speechSynthesis.paused)speechSynthesis.resume()}catch(e){}},4000)}
+let ttsWarned=false,CUR=null;
+function warnTTS(){S.ttsDead=true;if(ttsWarned)return;ttsWarned=true;toast('Voice isn’t playing on this device','Captions will guide you. Check the volume, or try Chrome or Edge, or a phone.',6000)}
+function speak(text,who='sp'){return new Promise(res=>{if(!S.voice||!window.speechSynthesis||S.ttsDead)return res();
+let done=false,started=false,tries=0;const fin=()=>{if(!done){done=true;res()}};
+const clean=text.replace(/…/g,'... ').replace(/’/g,"'").replace(/[🔍😄👀⏭]/gu,'').replace(/\?!/g,'?');
+const go=()=>{if(done)return;tries++;try{if(speechSynthesis.paused)speechSynthesis.resume();
+ const u=new SpeechSynthesisUtterance(clean);CUR=u;let v=who==='me'?VO.me:VO.sp,p=1,r=1;
+ if(who==='me'){const c=ME();p=c.pitch;r=c.rate;if(VO.me&&VO.me===VO.sp)p=c.g==='f'?1.22:.78}
+ if(v){u.voice=v;u.lang=v.lang}u.pitch=p;u.rate=r;u.volume=1;
+ u.onstart=()=>{if(CUR===u)started=true};
+ u.onend=()=>{if(CUR===u)fin()};
+ u.onerror=e=>{if(CUR!==u)return;if(e.error==='interrupted'||e.error==='canceled')return fin();
+  if(!started&&tries<2){if(v)BAD.add(v.name);pickVoices();setTimeout(go,60)}else{if(!started)warnTTS();fin()}};
+ speechSynthesis.speak(u)}catch(e){fin()}};
+go();
+(function watch(){setTimeout(()=>{if(done||started)return;if(!speechSynthesis.speaking&&!speechSynthesis.pending){if(tries<2){const v=who==='me'?VO.me:VO.sp;if(v)BAD.add(v.name);pickVoices();CUR=null;speechSynthesis.cancel();go();watch()}else{warnTTS();fin()}}else watch()},2200)})();
+setTimeout(fin,6000+text.length*85)})}
 
 /* ---------- timing + text ---------- */
 function wait(ms){const t=S.token;return new Promise((res,rej)=>setTimeout(()=>t===S.token?res():rej(ABORT),ms))}
@@ -1035,6 +1050,7 @@ b.onclick=()=>{S.char=k;save();pickVoices();g.querySelectorAll('.cc').forEach(x=
 if(window.speechSynthesis)speechSynthesis.cancel();speak(c.sample,'me').then(()=>b.classList.remove('talk'))};g.appendChild(b)});
 go_.disabled=!S.char;go_.onclick=()=>{if(!S.char)return;sfx.unlock();cs.classList.remove('on');if(window.speechSynthesis)speechSynthesis.cancel();done()};cs.classList.add('on');
 setTimeout(()=>{const tp=$('.cs-top');tp.classList.add('talk');speak('Hi, I am Tara, the junior botanist here. I need a partner. Who are you?','sp').then(()=>tp.classList.remove('talk'))},300)}
+$('#testSnd').onclick=()=>{unlockAudio();sfx.chime();pickVoices();const v=VO.sp;speak('Sound check. Can you hear me?','sp').then(()=>{});toast('Sound check',v?`Voice: ${v.name}. You should hear a chime and Sprout’s voice.`:'No voice found on this device. You’ll still hear sound effects, and captions will guide you.',5000)};
 $('#menuBtn').onclick=()=>{if(ui.querySelector('.menu'))return;sfx.click();capOff();const n=S.part,m=el('div','sheet menu',`<div class="bh">Menu</div>`);const st=el('div','bstack');
 const add=(label,fn,ghost)=>{const b=el('button','btn'+(ghost?' ghost':''),label);b.onclick=()=>{m.remove();fn()};st.appendChild(b)};
 add('↻ Restart Part '+n,()=>go(n));if(n<3)add('⏭ Skip to Part '+(n+1),()=>{S.unlocked=Math.max(S.unlocked,n+1);save();go(n+1)});
