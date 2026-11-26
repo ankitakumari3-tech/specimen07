@@ -222,6 +222,51 @@ body{background:#081322;color:var(--ink)}
 .skipb{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--u)*30);font:inherit;font-size:calc(var(--u)*4);font-weight:700;color:#06202A;background:#FFC857;border:0;border-radius:99px;padding:calc(var(--u)*2.4) calc(var(--u)*5);box-shadow:0 0 24px rgba(255,200,87,.5);cursor:pointer;z-index:5}
 .sheet.menu{z-index:30;background:#0A1426}
 .sheet.menu .bh{text-align:center;margin-bottom:calc(var(--u)*2)}
+.pt{border-radius:30%;overflow:hidden}
+.pt svg{width:100%;height:100%;display:block}
+.lid{transform-box:fill-box;transform-origin:center top;transform:scaleY(0);animation:blk 5s infinite}
+@keyframes blk{0%,92%{transform:scaleY(0)}95%{transform:scaleY(1)}98%,100%{transform:scaleY(0)}}
+.m1{opacity:0}
+.talk .m0{animation:mt0 .26s steps(1) infinite}
+.talk .m1{animation:mt1 .26s steps(1) infinite}
+.talk .pt svg{animation:bob .7s ease-in-out infinite}
+@keyframes mt0{0%{opacity:0}50%{opacity:1}}
+@keyframes mt1{0%{opacity:1}50%{opacity:0}}
+@keyframes bob{50%{transform:translateY(-2%)}}
+#cap .av{flex:0 0 calc(var(--u)*15);height:calc(var(--u)*15);box-shadow:0 0 0 2px #3FE0CF}
+#cap.sp{flex-direction:row-reverse;border-left:0;border-right:calc(var(--u)*1.4) solid #3FE0CF}
+#cap.me{border-left-color:#FFC857}
+#cap.me .av{box-shadow:0 0 0 2px #FFC857}
+#cap.me .ch{color:#FFC857}
+#cap.sp .ct{text-align:left}
+#cap .ch em{font-style:normal;font-size:.85em;letter-spacing:.1em;color:#A9C9CF;border:1px solid rgba(169,201,207,.4);border-radius:99px;padding:0 .7em;margin-left:.4em}
+#actor{z-index:7;inset:auto;left:3%;bottom:calc(var(--u)*31);width:calc(var(--u)*23);height:calc(var(--u)*23);opacity:0;transform:translateX(-40%) scale(.8);transition:opacity .3s,transform .4s cubic-bezier(.2,1.3,.4,1);pointer-events:none}
+#actor.on{opacity:1;transform:none}
+#actor .pt{width:100%;height:100%;box-shadow:0 0 0 3px #FFC857,0 0 26px rgba(255,200,87,.5)}
+#actor .tool{position:absolute;right:-10%;bottom:-8%;width:calc(var(--u)*10);height:calc(var(--u)*10);border-radius:50%;background:#0A1426;border:2px solid #FFC857;font-size:calc(var(--u)*5.4);display:flex;align-items:center;justify-content:center}
+#beam{z-index:6;inset:auto;left:0;top:0;height:5px;width:0;border-radius:5px;transform-origin:0 50%;opacity:0;pointer-events:none;transition:width .35s ease-out,opacity .25s}
+#charsel{z-index:12;display:none;flex-direction:column;padding:calc(var(--u)*7) calc(var(--u)*5) calc(var(--u)*6);background:linear-gradient(180deg,#0B1A2E,#17234A);overflow:auto}
+#charsel.on{display:flex}
+.cs-top{display:flex;gap:calc(var(--u)*3);align-items:center;background:rgba(255,255,255,.06);border:1px solid rgba(63,224,207,.35);border-radius:calc(var(--u)*4);padding:calc(var(--u)*3);margin-bottom:calc(var(--u)*4)}
+.cs-top .pt{flex:0 0 calc(var(--u)*16);height:calc(var(--u)*16);box-shadow:0 0 0 2px #3FE0CF}
+.cs-top p{margin:0;font-size:calc(var(--u)*4);line-height:1.4;color:#E6F7F3}
+.cs-top b{color:#5BF0B0;display:block;font-size:calc(var(--u)*3.4);letter-spacing:.14em;margin-bottom:calc(var(--u)*.6)}
+#charsel h2{margin:0 0 calc(var(--u)*3);font-size:calc(var(--u)*6.4);letter-spacing:.04em;text-align:center}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*3)}
+.cc{font:inherit;color:#F2FFFB;background:rgba(255,255,255,.06);border:2px solid rgba(63,224,207,.3);border-radius:calc(var(--u)*4);padding:calc(var(--u)*3) calc(var(--u)*2);text-align:center;cursor:pointer;transition:border-color .2s,transform .15s,box-shadow .2s}
+.cc:active{transform:scale(.97)}
+.cc .pt{width:calc(var(--u)*24);height:calc(var(--u)*24);margin:0 auto calc(var(--u)*2)}
+.cc b{display:block;font-size:calc(var(--u)*4.4)}
+.cc span{display:block;font-size:calc(var(--u)*3.2);color:#A9C9CF;margin-top:calc(var(--u)*.6);line-height:1.3}
+.cc.sel{border-color:#FFC857;box-shadow:0 0 0 2px #FFC857,0 0 26px rgba(255,200,87,.35);background:rgba(255,200,87,.1)}
+#csGo{margin-top:calc(var(--u)*4)}
+.chrow{display:flex;align-items:center;gap:calc(var(--u)*3);font:inherit;color:#F2FFFB;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,200,87,.5);border-radius:calc(var(--u)*4);padding:calc(var(--u)*2) calc(var(--u)*3);margin-bottom:calc(var(--u)*2.4);width:100%;text-align:left;cursor:pointer}
+.chrow .pt{flex:0 0 calc(var(--u)*11);height:calc(var(--u)*11)}
+.chrow span{flex:1;font-size:calc(var(--u)*4);font-weight:700}
+.chrow small{display:block;font-size:calc(var(--u)*3);color:#FFC857;letter-spacing:.14em;font-weight:800}
+.chrow i{font-style:normal;font-size:calc(var(--u)*3.4);color:#A9C9CF}
+#home{overflow:auto}
+@media (prefers-reduced-motion: reduce){.lid,.talk .pt svg{animation:none}}
 </style>
 </head>
 <body>
@@ -236,6 +281,8 @@ body{background:#081322;color:var(--ink)}
   <div id="titles"><div class="tw"></div></div>
   <div id="camtag"><i></i><span></span></div>
   <div id="cap" aria-live="polite"></div>
+  <div id="beam"></div>
+  <div id="actor"><div class="pt"></div><div class="tool">🔍</div></div>
   <div id="ui"></div>
   <div id="hud">
     <div><div class="h1">SPECIMEN 07</div><div class="h2" id="hudPart"></div></div>
@@ -248,11 +295,13 @@ body{background:#081322;color:var(--ink)}
   </div>
   <button id="scan" aria-label="Scan for the hidden clue">🔍 Scan</button>
   <div id="toast"></div>
+  <div id="charsel" role="dialog" aria-label="Choose your character"><div class="cs-top"><div class="pt" id="csTara"></div><p><b>SPROUT (TARA)</b>Hi, I am Tara, the junior botanist here. I need a partner. Who are you?</p></div><h2>Choose your character</h2><div class="cgrid" id="cgrid"></div><button class="btn" id="csGo" disabled>Let’s go ▶</button></div>
   <div id="home">
     <div class="k">BOTANICAL RESEARCH LAB</div>
     <h1>The plant with no name</h1>
-    <p id="homeP">Someone wiped a botanical lab. One plant survived. Help Sprout, the lab AI, find out who she is before W strikes again.<br><b>Sound on.</b></p>
+    <p id="homeP">Someone wiped a botanical lab. One plant survived. Team up with Sprout and find out who she is before W strikes again.<br><b>Sound on.</b></p>
     <label class="nml" for="nm">YOUR NAME, DETECTIVE</label><input id="nm" maxlength="18" autocomplete="off" placeholder="Type your name">
+    <button class="chrow" id="chRow" style="display:none"></button>
     <div class="parts" id="parts"></div>
     <div class="tip">Opened inside WhatsApp? Tap ⋮ and choose “Open in browser” (Chrome/Safari) for sound and Sprout’s voice.</div>
   </div>
@@ -264,12 +313,12 @@ const D=Math.PI/180;
 const stage=$('#stage'),world=$('#world'),camwrap=$('#camwrap'),ov=$('#ov'),capEl=$('#cap'),tw=$('#titles .tw'),ui=$('#ui'),blackEl=$('#black'),hud=$('#hud'),toastEl=$('#toast'),scanBtn=$('#scan'),spark=$('#spark');
 const ABORT={abort:true};
 const PARTNAMES={1:'The plant with no name',2:'The flower code',3:'The identity'};
-const S={xp:0,token:0,voice:true,sound:true,found:{},unlocked:1,pass:{1:0,2:0,3:0},part:1,heart:null};
-try{const d=JSON.parse(localStorage.getItem('specimen07v3')||'null');if(d){S.found=d.found||{};S.unlocked=d.unlocked||1;S.pass=d.pass||S.pass;S.xp=d.xp||0;S.name=d.name||''}}catch(e){}
+const S={char:'',xp:0,token:0,voice:true,sound:true,found:{},unlocked:1,pass:{1:0,2:0,3:0},part:1,heart:null};
+try{const d=JSON.parse(localStorage.getItem('specimen07v3')||'null');if(d){S.found=d.found||{};S.unlocked=d.unlocked||1;S.pass=d.pass||S.pass;S.xp=d.xp||0;S.name=d.name||'';S.char=d.char||''}}catch(e){}
 function cls(e,m){if(e)e.classList[m]('on')}
 function NM(){return S.name||'detective'}
 function cleanName(v){return (v||'').replace(/[<>&"`\\{}]/g,'').replace(/\s+/g,' ').trim().slice(0,18)}
-function save(){try{localStorage.setItem('specimen07v3',JSON.stringify({found:S.found,unlocked:S.unlocked,pass:S.pass,xp:S.xp,name:S.name}))}catch(e){}}
+function save(){try{localStorage.setItem('specimen07v3',JSON.stringify({found:S.found,unlocked:S.unlocked,pass:S.pass,xp:S.xp,name:S.name,char:S.char}))}catch(e){}}
 
 /* ---------- sizing ---------- */
 const FX={w:360,h:640,r:1,p:[]};
@@ -322,22 +371,74 @@ const sfx={
 function heart(on){clearInterval(S.heart);S.heart=null;if(on){const b=()=>{sfx.thump(.45);setTimeout(()=>sfx.thump(.28),250)};b();S.heart=setInterval(b,1150)}}
 
 /* ---------- narration ---------- */
-let VOICE=null;
-function pickVoice(){if(!window.speechSynthesis)return;const vs=speechSynthesis.getVoices();if(!vs.length)return;
-const pref=[/en-IN.*(Natural|Neural)/i,/(Natural|Neural).*(India)/i,/Google UK English Male/i,/Daniel/i,/Rishi/i,/en-GB.*(Natural|Neural)/i,/(Natural|Neural)/i,/Google UK English Female/i];
-for(const re of pref){const v=vs.find(v=>/^en/i.test(v.lang)&&(re.test(v.name)||re.test(v.lang+' '+v.name)));if(v){VOICE=v;return}}
-VOICE=vs.find(v=>/^en-(GB|IN)/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}
-if(window.speechSynthesis){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
-function speak(text){return new Promise(res=>{if(!S.voice||!window.speechSynthesis)return res();let done=false;const fin=()=>{if(!done){done=true;res()}};
-try{const u=new SpeechSynthesisUtterance(text.replace(/…/g,'...').replace(/’/g,"'").replace(/🔍/g,''));u.rate=1.02;u.pitch=1;if(VOICE){u.voice=VOICE;u.lang=VOICE.lang}else u.lang='en-GB';u.onend=fin;u.onerror=fin;setTimeout(fin,1800+text.length*80);speechSynthesis.speak(u)}catch(e){fin()}})}
+/* ---------- characters ---------- */
+const CHARS={
+explorer:{role:'The Explorer',g:'f',skin:'#B9774E',hair:'curly',hairC:'#24160F',outfit:'#1F9E6E',bg:'#1E5E52',pitch:1.14,rate:1.04,vibe:'Fearless. Loves a good mystery.',sample:'I am the Explorer! Come, let’s solve this mystery.'},
+hacker:{role:'The Hacker',g:'m',skin:'#A86F48',hair:'short',hairC:'#140E0A',outfit:'#5B3FC4',bg:'#2E2563',pitch:.9,rate:1.06,vibe:'Cracks any code. Calm and clever.',sample:'Hacker online. Give me any code, I will crack it.'},
+scientist:{role:'The Scientist',g:'f',skin:'#D39C72',hair:'bun',hairC:'#36200F',outfit:'#EAF3F5',inner:'#3FE0CF',bg:'#1D4F66',pitch:1.02,rate:.98,vibe:'Needs proof for everything.',sample:'Scientist here. I need proof for every clue.'},
+daredevil:{role:'The Daredevil',g:'m',skin:'#8D5A3A',hair:'cap',hairC:'#17100B',outfit:'#E8742E',bg:'#6A3523',pitch:1.08,rate:1.1,vibe:'Jumps first, thinks later.',sample:'The Daredevil has arrived! Fear? What is that?'}};
+const TARA={g:'f',skin:'#B47A50',hair:'braid',hairC:'#1A110C',outfit:'#EEF5F4',inner:'#11A69A',bg:'#0F5557',glasses:true};
+function shade(h,a){const n=parseInt(h.slice(1),16);const c=x=>Math.max(0,Math.min(255,x+a));return '#'+[c(n>>16),c((n>>8)&255),c(n&255)].map(v=>v.toString(16).padStart(2,'0')).join('')}
+let PTN=0;
+function portrait(c){PTN++;const sk=c.skin,hc=c.hairC,sh=shade(sk,-30),d=((PTN*0.73)%4).toFixed(2);
+const cap=`<path d="M29 47 C26 23 38 14 50 14 C63 14 75 23 71 47 C69 33 61 27 50 28 C40 27 32 33 29 47Z" fill="${hc}"/>`;
+let back='',front=cap,over='',neckwear='';
+if(c.hair==='curly'){back=`<g fill="${hc}">${[[30,38,13],[70,38,13],[27,55,11],[73,55,11],[35,24,12],[65,24,12],[50,18,14],[27,69,9],[73,69,9]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>`;front=`<g fill="${hc}">${[[37,25,8],[46,21,8],[55,21,8],[63,26,7.5],[32,32,6.5],[68,33,6.5]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}"/>`).join('')}</g>`;neckwear=`<path d="M34 80 Q50 90 66 80" stroke="#F2C46B" stroke-width="6" fill="none" stroke-linecap="round"/>`}
+if(c.hair==='bun'){back=`<circle cx="50" cy="13" r="9" fill="${hc}"/>`;over=`<rect x="33" y="26" width="34" height="5" rx="2.5" fill="#24323F"/><circle cx="42" cy="29" r="5.6" fill="#8FEFFF" stroke="#24323F" stroke-width="2"/><circle cx="58" cy="29" r="5.6" fill="#8FEFFF" stroke="#24323F" stroke-width="2"/><circle cx="40.5" cy="27.5" r="1.6" fill="#fff"/><circle cx="56.5" cy="27.5" r="1.6" fill="#fff"/>`}
+if(c.hair==='short'){front=cap+`<path d="M36 22 C46 16 60 18 68 30 C60 25 50 24 40 28Z" fill="${hc}"/>`;neckwear=`<path d="M33 79 Q50 92 67 79" stroke="#1C1C24" stroke-width="4" fill="none"/><rect x="27" y="74" width="10" height="12" rx="3.5" fill="#A78BFF"/><rect x="63" y="74" width="10" height="12" rx="3.5" fill="#A78BFF"/>`}
+if(c.hair==='cap'){front=cap+`<path d="M29 37 C29 20 40 14 50 14 C61 14 71 20 71 37 C64 31 57 29 50 29 C43 29 36 31 29 37Z" fill="#E8564F"/><path d="M62 20 Q80 18 84 27 Q74 30 67 29Z" fill="#B23A35"/><circle cx="50" cy="15" r="2" fill="#B23A35"/>`}
+if(c.hair==='braid'){back=`<path d="M29 46 C27 62 30 72 33 78 L38 76 C35 68 34 58 34 47Z" fill="${hc}"/>`;front=cap+`<path d="M50 14 L50 27" stroke="${shade(hc,25)}" stroke-width="1"/>`;over=`<g fill="${hc}">${[[69,58],[70,66],[71,74],[71,82]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="4.6" ry="5"/>`).join('')}</g><path d="M68 44 C72 50 70 54 69 58" stroke="${hc}" stroke-width="7" fill="none"/>`}
+const glasses=c.glasses?`<g fill="none" stroke="#1C2833" stroke-width="1.6"><circle cx="42" cy="47" r="6"/><circle cx="58" cy="47" r="6"/><path d="M48 47 H52 M36 46 L31 44 M64 46 L69 44"/></g>`:'';
+const coat=c.inner?`<path d="M40 77 L50 100 L60 77Z" fill="${c.inner}"/><path d="M39 77 L49 100 M61 77 L51 100" stroke="#B9C9CE" stroke-width="2" fill="none"/>`:`<path d="M43 76 L50 85 L57 76" fill="${sk}"/>`;
+const leafpin=c===TARA?`<path d="M66 88 C66 83 70 81 74 82 C73 86 70 88 66 88Z" fill="#2FBF85"/>`:'';
+return `<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="${c.bg}"/><circle cx="50" cy="40" r="44" fill="#fff" opacity=".06"/>${back}
+<path d="M16 102 C18 83 31 76 50 76 C69 76 82 83 84 102Z" fill="${c.outfit}"/>${coat}${leafpin}
+<rect x="44" y="60" width="12" height="18" rx="5" fill="${sh}"/><ellipse cx="30" cy="48" rx="3.6" ry="5.2" fill="${sk}"/><ellipse cx="70" cy="48" rx="3.6" ry="5.2" fill="${sk}"/>
+<ellipse cx="50" cy="46" rx="20" ry="23" fill="${sk}"/><ellipse cx="38" cy="55" rx="4" ry="2.2" fill="#E86B6B" opacity=".28"/><ellipse cx="62" cy="55" rx="4" ry="2.2" fill="#E86B6B" opacity=".28"/>
+<ellipse cx="42" cy="47" rx="3.4" ry="3.9" fill="#fff"/><ellipse cx="58" cy="47" rx="3.4" ry="3.9" fill="#fff"/><circle cx="42.3" cy="47.7" r="2.4" fill="#2A1A12"/><circle cx="58.3" cy="47.7" r="2.4" fill="#2A1A12"/><circle cx="43.1" cy="46.7" r=".85" fill="#fff"/><circle cx="59.1" cy="46.7" r=".85" fill="#fff"/>
+<g class="lid" style="animation-delay:${d}s"><ellipse cx="42" cy="47" rx="3.9" ry="4.3" fill="${sk}"/><ellipse cx="58" cy="47" rx="3.9" ry="4.3" fill="${sk}"/></g>
+<g class="brows"><path d="M37.5 41.2 Q42 38.6 46.5 40.6" stroke="${hc}" stroke-width="1.9" fill="none" stroke-linecap="round"/><path d="M53.5 40.6 Q58 38.6 62.5 41.2" stroke="${hc}" stroke-width="1.9" fill="none" stroke-linecap="round"/></g>
+<path d="M50 49 Q47.8 54 50.6 55" stroke="${sh}" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+<path class="m0" d="M44.5 60 Q50 64.5 55.5 60" stroke="#6B2A2A" stroke-width="1.9" fill="none" stroke-linecap="round"/><g class="m1"><ellipse cx="50" cy="61" rx="4.6" ry="3.6" fill="#5A1E24"/><ellipse cx="50" cy="62.8" rx="2.7" ry="1.4" fill="#E07B7B"/></g>
+${front}${glasses}${over}${neckwear}</svg>`}
+function G(m,f){const c=CHARS[S.char]||CHARS.explorer;return c.g==='f'?f:m}
+function ME(){return CHARS[S.char]||CHARS.explorer}
+
+/* ---------- voices: Sprout and the student each get their own ---------- */
+const VO={sp:null,me:null};
+const FEM=/(female|Neerja|Veena|Lekha|Heera|Kalpana|Swara|Aditi|Sangeeta|Samantha|Karen|Moira|Tessa|Zira|Susan|Hazel|Serena|Kate|Fiona|Victoria)/i,MAL=/(\bmale|Prabhat|Rishi|Ravi|Hemant|Madhur|Daniel|Alex|Fred|David|Mark|George|Arthur|Oliver|Aaron)/i;
+function pickV(gen,avoid){const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));if(!vs.length)return null;
+const rank=v=>(/en[-_]IN/i.test(v.lang)?0:/GB/i.test(v.lang)?30:40)+(/(Natural|Neural|Google|Premium|Enhanced)/i.test(v.name)?0:5);
+const so=vs.slice().sort((a,b)=>rank(a)-rank(b)),re=gen==='f'?FEM:MAL;
+return so.find(v=>re.test(v.name)&&v!==avoid)||so.find(v=>v!==avoid&&/IN/i.test(v.lang))||so.find(v=>v!==avoid)||so[0]}
+function pickVoices(){if(!window.speechSynthesis)return;VO.sp=pickV('f',null);VO.me=pickV(ME().g,VO.sp)}
+if(window.speechSynthesis){pickVoices();speechSynthesis.onvoiceschanged=pickVoices}
+function speak(text,who='sp'){return new Promise(res=>{if(!S.voice||!window.speechSynthesis)return res();let done=false;const fin=()=>{if(!done){done=true;res()}};
+try{const u=new SpeechSynthesisUtterance(text.replace(/…/g,'... ').replace(/’/g,"'").replace(/[🔍😄👀⏭]/gu,'').replace(/\?!/g,'?'));
+let v=who==='me'?VO.me:VO.sp,p=1,r=1;if(who==='me'){const c=ME();p=c.pitch;r=c.rate;if(VO.me&&VO.me===VO.sp)p=c.g==='f'?1.22:.78}
+if(v){u.voice=v;u.lang=v.lang}else u.lang='en-IN';u.pitch=p;u.rate=r;u.onend=fin;u.onerror=fin;setTimeout(fin,1800+text.length*85);speechSynthesis.speak(u)}catch(e){fin()}})}
 
 /* ---------- timing + text ---------- */
 function wait(ms){const t=S.token;return new Promise((res,rej)=>setTimeout(()=>t===S.token?res():rej(ABORT),ms))}
-const AV=`<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 10 C20 5 24 1 30 2 C29 7 25 10 20 10Z" fill="#2FBF85"/><path d="M20 10 C20 6 16 2 11 3 C12 8 16 10 20 10Z" fill="#5BEAAA"/><circle cx="20" cy="24" r="14" fill="#11A69A"/><rect x="9.5" y="18" width="21" height="11.5" rx="5.7" fill="#F2FFFB"/><circle cx="15.5" cy="23.6" r="2.5" fill="#6FF0DF"/><circle cx="24.5" cy="23.6" r="2.5" fill="#6FF0DF"/></svg>`;
-function capShow(t,head,av){capEl.classList.remove('on');clearTimeout(capShow.tm);capShow.tm=setTimeout(()=>{capEl.innerHTML=(av?`<div class="av">${AV}</div>`:'')+`<div class="ct">${head?`<span class="ch">${head}</span>`:''}${t}</div>`;capEl.classList.add('on')},140)}
-function capOff(){clearTimeout(capShow.tm);capEl.classList.remove('on')}
-async function say(text,hold=350,head='SPROUT'){const t=S.token;const titled=tw.children.length>0;if(!titled)capShow(text,head,head==='SPROUT');const words=text.split(/\s+/).length;
-await Promise.all([new Promise(r=>setTimeout(r,Math.max(1300,words*300+300))),speak(text)]);if(t!==S.token)throw ABORT;await wait(hold)}
+function capShow(t,tag,who){capEl.classList.remove('on');clearTimeout(capShow.tm);capShow.tm=setTimeout(()=>{capEl.classList.remove('sp','me');if(who)capEl.classList.add(who);
+const nm=who==='sp'?'SPROUT':who==='me'?(S.name||'YOU').toUpperCase():'';
+capEl.innerHTML=(who?`<div class="av pt">${portrait(who==='sp'?TARA:ME())}</div>`:'')+`<div class="ct">${nm||tag?`<span class="ch">${nm}${tag?(nm?` <em>${tag}</em>`:tag):''}</span>`:''}${t}</div>`;capEl.classList.add('on')},120)}
+function capOff(){clearTimeout(capShow.tm);capEl.classList.remove('on','talk')}
+async function say(text,hold=250,who='sp',tag){const t=S.token;const titled=tw.children.length>0;if(!titled)capShow(text,tag,who);const words=text.split(/\s+/).length;
+capEl.classList.add('talk');const act=$('#actor');if(who==='me'&&act.classList.contains('on'))act.classList.add('talk');
+const sp=speak(text,who).then(()=>{if(!S.voice)return new Promise(r=>setTimeout(r,words*230))}).then(()=>{capEl.classList.remove('talk');act.classList.remove('talk')});
+await Promise.all([new Promise(r=>setTimeout(r,Math.max(1100,words*280+250))),sp]);if(t!==S.token)throw ABORT;await wait(hold)}
+const sp=(t,h,tag)=>say(t,h,'sp',tag),me=(t,h,tag)=>say(t,h,'me',tag);
+
+/* ---------- the student's character does the actions ---------- */
+async function act(target,tool='🔍',color='#3FE0CF',ms=900){const a=$('#actor'),b=$('#beam');a.querySelector('.pt').innerHTML=portrait(ME());a.querySelector('.tool').textContent=tool;a.classList.add('on');await wait(300);
+const e=typeof target==='string'?W(target):target;const rr=e&&e.getBoundingClientRect();if(e&&rr.width>1){const sr=stage.getBoundingClientRect(),ar=a.getBoundingClientRect(),r=e.getBoundingClientRect();
+const x1=ar.right-sr.left-4,y1=ar.top-sr.top+ar.height*.45,x2=r.left-sr.left+r.width/2,y2=r.top-sr.top+r.height/2,len=Math.hypot(x2-x1,y2-y1),ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+b.style.left=x1+'px';b.style.top=y1+'px';b.style.transform=`rotate(${ang}deg)`;b.style.background=`linear-gradient(90deg,${color},#fff)`;b.style.boxShadow=`0 0 14px ${color},0 0 4px #fff`;b.style.width='0px';b.style.opacity=1;b.getBoundingClientRect();b.style.width=len+'px';
+noiseHit(.35,1800,5200,.12);tone(880,.25,'sine',.04,0,.3,1760)}
+await wait(ms);b.style.opacity=0;await wait(250)}
+function actOff(){$('#actor').classList.remove('on','talk');$('#beam').style.opacity=0}
+
 function tLine(text,cls='t-big'){capOff();const d=document.createElement('div');d.className='tl '+cls;d.textContent=text;tw.appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('on')));return d}
 function tClear(ms=500){[...tw.children].forEach(e=>{e.classList.remove('on','typed')});return wait(ms).then(()=>{tw.innerHTML=''})}
 async function typeLine(text,cls){capOff();const d=document.createElement('div');d.className='tl typed '+cls;tw.appendChild(d);for(const ch of text){d.textContent+=ch;if(ch!==' ')sfx.tick();await wait(42)}return d}
@@ -594,7 +695,7 @@ scanBtn.onclick=()=>{const p=pending();if(!p)return;sfx.click();sparkOn(p)};
 spark.onclick=()=>{if(sparkFor)found(sparkFor)};
 function evCount(){const n=Object.keys(CLUES).filter(k=>S.found[k]).length;$('#evBtn').textContent=`◆ ${n}/6`;return n}
 function found(id){if(S.found[id])return;S.found[id]=true;save();evCount();const e=clueEl(id);if(e)e.classList.remove('armed');sfx.chime();sparkOff();updScan();xp(50);confetti(14);
-const cl=CLUES[id];toast((S.pass[cl.part]||0)>1?'OH! Ye toh pehle hi dikhaya tha! 👀':'◆ Hidden clue found: '+cl.name,cl.desc,6500)}
+const cl=CLUES[id];toast((S.pass[cl.part]||0)>1?'OH! It was right there all along! 👀':'◆ Hidden clue found: '+cl.name,cl.desc,6500)}
 
 $('#evBtn').onclick=()=>{const n=evCount();toast(`${n} of 6 hidden clues`,n<6?'Each part hides two. When 🔍 Scan beeps, tap it.':'You found every hidden clue.')};
 $('#xpBtn').onclick=()=>toast(`⚡ ${S.xp} XP`,`Rank: ${rank()}. Hidden clues are worth +50 each.`);
@@ -612,14 +713,14 @@ const tg=e.target;if(tg&&tg.closest&&tg.closest('button,input,.sheet,.machine,#h
 if(tapWait){const h=hitAt(x,y,tapWait.ids.map(W).filter(Boolean));if(h){tapWait.res(h.id);return}}
 const c=hitAt(x,y,[...document.querySelectorAll('.clue.armed')]);if(c)found(c.dataset.clue)}
 if(window.PointerEvent)stage.addEventListener('pointerdown',onPress);else{stage.addEventListener('touchstart',onPress,{passive:true});stage.addEventListener('mousedown',onPress)}
-async function inst(text){capShow(text,'YOUR MOVE',false);await speak(text)}
+async function inst(text){capShow(text,'YOUR MOVE',null);await speak(text,'sp')}
 function termMsg(lines){const a=W('tmA'),b=W('tmW');if(!lines){a.style.display='';b.style.display='none';return}a.style.display='none';b.style.display='';b.innerHTML=lines.map((l,i)=>`<text x="776" y="${862+i*30}" fill="${i===lines.length-1?'#FF5A6A':'#fff'}">${l}</text>`).join('');sfx.glitch()}
 async function huntPause(id,ms=5200){const t0=performance.now();while(!S.found[id]&&performance.now()-t0<ms)await wait(250);if(S.found[id])await wait(1800)}
 
 /* ---------- UI components ---------- */
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
 function onNext(e){requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.add('on')))}
-const OOPS=['Nope! W would love that answer 😅','Close… but that’s a fake. Try again!','Hmm, the evidence says no. One more try?','Arre, not that one. Look again!'];
+const OOPS=['Nope! W would love that answer 😅','Close… but that’s a fake. Try again!','Hmm, the evidence says no. One more try?','Oops, not that one. Look again!'];
 const oops=()=>OOPS[Math.floor(Math.random()*OOPS.length)];
 function choose(q,sub,opts,correct,onWrong){return new Promise(res=>{let tries=0;const t=S.token;capOff();const w=el('div','sheet',`<div class="cq">${q}</div>${sub?`<div class="cs">${sub}</div>`:''}<div class="opts"></div><div class="cfb" aria-live="polite"></div>`);
 const box=w.querySelector('.opts');opts.forEach((o,oi)=>{const b=el('button','opt',`<span class="oi">${o.icon||''}</span><span class="ot"><b>EVIDENCE ${'ABCD'[oi]}</b>${o.label}</span>`);
@@ -646,32 +747,38 @@ function setOp(id,v){const e=W(id);if(e)e.setAttribute('opacity',v)}
 function lit(id,ms=2200){const e=W(id);if(!e)return;e.setAttribute('filter','url(#glowF)');sfx.click();setTimeout(()=>e.removeAttribute('filter'),ms)}
 function plantMode(p){W('fruitG').style.display=p===3?'':'none';world.classList.remove('healed');termMsg(null);W('scanPts').innerHTML='';['rootG','stemG','leavesG','inflG','fruitG'].forEach(i=>{W(i).style.transition='opacity 1.2s';W(i).style.opacity=1});world.classList.remove('bp');setOp('bpGrid',0);W('badges').innerHTML='';W('bpL').innerHTML='';['ageG','nodeMk','nodeLb','leafLb'].forEach(i=>setOp(i,0))}
 function setHud(n){S.part=n;$('#hudPart').textContent=`Part ${n} of 3`;hud.classList.add('on')}
-function resetAll(){disarmAll();heart(false);ui.innerHTML='';tw.innerHTML='';capOff();camTag('');ov.style.opacity=0;ov.innerHTML='';stage.classList.remove('glitch');toastEl.classList.remove('on');tapWait=null;if(window.speechSynthesis)speechSynthesis.cancel()}
+function resetAll(){actOff();disarmAll();heart(false);ui.innerHTML='';tw.innerHTML='';capOff();camTag('');ov.style.opacity=0;ov.innerHTML='';stage.classList.remove('glitch');toastEl.classList.remove('on');tapWait=null;if(window.speechSynthesis)speechSynthesis.cancel()}
 function leafLabels(){const g=LEAFGEO[1],x=sx(872);W('leafLb').innerHTML=`<path d="M${f1((x+g.ex)/2)} ${f1(g.ey+12)} L500 902" stroke="#FFC857" stroke-width="2"/><text x="500" y="920" fill="#FFC857">PETIOLE (stalk)</text>
 <path d="M${f1(g.x+10)} ${f1(g.y-18)} L600 774" stroke="#5BF0B0" stroke-width="2"/><text x="560" y="768" fill="#5BF0B0">LAMINA (blade)</text>
 <path d="M${f1(g.x+30)} ${f1(g.y+4)} L640 868" stroke="#C9B6FF" stroke-width="2"/><text x="600" y="886" fill="#C9B6FF">VEINS</text>`}
 
 /* ================= PART 1: THE PLANT WITH NO NAME ================= */
 async function scanRoot(){
+await act('sc_root','🔍');await me('Scanning the roots…',100);actOff();
 sfx.whoosh(.2);await camTo({x:450,y:1140,s:2.2},2000);
-await say('One boss root diving straight down, and all its side-kicks branching off. A tap root!',200,'SCAN: ROOT');
+await sp('See this? One main root going straight down, and smaller roots branching out from it. That is called a tap root.',150,'ROOT');
 arm('p1b',true);await camTo({x:450,y:1262,s:6.5},2200);
-await say('Zoom into the tip. Something down here is growing… hair? Literally.',200,'SCAN: ROOT TIP');
+await sp('Now zoom into the tip. Do you notice anything different?',150,'ROOT TIP');
 await huntPause('p1b',4200);
+await me('Are these… tiny hairs?',150);
 const c=card('ROOT TIP: 4 ZONES','Only one zone grows root hairs',[{svg:ROOTZONES}],1);
-await say('Cap in front like a helmet. Behind it, cells divide, stretch, then mature. Only the mature zone grows hairs to drink water.',900);
+await sp('Yes! Root hairs. In front there is a cap, like a helmet. Behind it, cells divide, then stretch, then mature. The hairs grow only in the mature zone, to drink water.',700);
 await cardOff(c);arm('p1b',false)}
 async function scanStem(){
+await act('sc_stem','🔍');actOff();
 await camTo({x:452,y:860,s:2.3},2000);setOp('nodeMk',1);setOp('nodeLb',1);sfx.click();
-await say('Every leaf plugs in at a node. The gap between two nodes? Internode.',200,'SCAN: STEM');
-await say('And those tiny buds above each leaf are branches waiting on standby.',700,'SCAN: STEM');
+await sp('Where a leaf joins the stem, that is a node. The gap between two nodes is an internode.',150,'STEM');
+await me('And these small buds?',100);
+await sp('Axillary buds. Future branches, just waiting on standby.',600,'STEM');
 setOp('nodeLb',0);setOp('nodeMk',0)}
 async function scanLeaf(){
+await act('sc_leaf','🔍');actOff();
 const lg=LEAFGEO[1];await camTo({x:lg.x+14,y:lg.y+24,s:3.1},2000);setOp('leafLb',1);sfx.click();
-await say('Stalk, blade, veins. Basically a solar panel with its own plumbing.',800,'SCAN: LEAF');
+await sp('The stalk is called the petiole, the flat blade is the lamina, and these veins are the full plumbing system.',150,'LEAF');
+await me('So basically a solar panel with plumbing. Cool.',600);
 setOp('leafLb',0)}
 async function part1(){
-setHud(1);plantMode(1);hud.classList.remove('on');leafLabels();
+setHud(1);plantMode(1);hud.classList.remove('on');leafLabels();actOff();
 blackEl.style.transition='none';blackEl.style.opacity=1;setCam({x:-560,y:1060,s:1.45,blur:0});
 amb({hum:.06,air:.05,bed:.04},2);await wait(800);
 await typeLine('BOTANICAL RESEARCH LAB','t-lab');await wait(600);
@@ -680,56 +787,70 @@ await typeLine('STATUS: UNIDENTIFIED','t-warn');await wait(1100);
 await tClear(400);
 for(const v of[.2,1,.5,1,.15,.8,0]){sfx.buzz();blackEl.style.transition='none';blackEl.style.opacity=v;await wait(v?110:180)}
 hud.classList.add('on');
-camTo({x:-180,y:1000,s:1.35},5000);
-await say(`Oh! A human! Finally. Hi ${NM()}! I’m Sprout, this lab’s AI.`,200);
-await say('Something terrible happened here. Every single plant… dead.',500);
+camTo({x:-180,y:1000,s:1.35},6000);
+await sp(`Hello? Is anyone there?… Oh, thank God! ${NM()}, you came!`,150);
+await me('Yes, I got your message. What… what happened here?',150);
+await sp('I am Tara. Everyone here calls me Sprout. Last night, someone wiped out this entire lab.',100);
+await sp('Just look. Every single plant… gone.',200);
+await me('Every one of them? This is seriously creepy.',200);
 sfx.whoosh(.25);await camTo({x:450,y:880,s:1.05},2600);lit('plant',2000);
-await say('Except her. Specimen 07. The last one alive.',600);
+await sp('Only one survived. Specimen 07.',150);
+await me('Whoa. She looks completely healthy!',200);
 await camTo({x:776,y:900,s:3},2000);
-await say('And someone deleted her entire record. Name, family, everything. Gone.',300);
+await sp('Yes, but her entire record has been deleted. Name, family, everything.',150);
+await me('Then how will we find out who she is?',200);
 await camTo({x:585,y:1200,s:3.2},2000);
-await say('They left only this warning. Hmm. Suspicious.',200);
+await sp('They left only this one warning. Read it.',150);
+await me('"Do not identify from the flower"… Hmm. Strange.',200);
 arm('p1a',true);
-if(!S.found.p1a){await say('Wait… my scanner is beeping! Something is hidden right here. Tap 🔍 Scan, then tap the sparkle.',200);await huntPause('p1a',14000);if(!S.found.p1a){sparkOn('p1a');await huntPause('p1a',7000)}}
+if(!S.found.p1a){await sp('One second… my scanner is beeping! Something is hidden right here. Tap 🔍 Scan, then tap the sparkle.',150);await huntPause('p1a',14000);if(!S.found.p1a){sparkOn('p1a');await huntPause('p1a',7000)}}
 else await wait(1200);
 arm('p1a',false);
-if(S.found.p1a)await say(`Nice, ${NM()}! You’re a natural. Hold on to that symbol. It means something.`,300);
+if(S.found.p1a)await sp(`Nice, ${NM()}! You have sharp eyes. Remember this symbol.`,200);
 await camTo({x:450,y:860,s:.95},2200);
-await say('Whoever did this forgot one thing. The plant itself is the record. Let’s scan her!',300);
+await me('Wait. The record is deleted, but the plant itself has not changed, right?',150);
+await sp('Exactly! The plant itself is the record. Come, let’s scan her.',200);
 /* GAME 1: free scan */
 W('scanPts').innerHTML=scanPtsSVG();const done=new Set();
 while(done.size<3){
  await inst(done.size?'Tap another glowing point.':'Tap any glowing point to scan it.');
  const id=await waitTap(['sc_root','sc_stem','sc_leaf','sc_flower'].filter(i=>!done.has(i)),['sc_root','sc_stem','sc_leaf'].find(i=>!done.has(i)));
- if(id==='sc_flower'){sfx.buzz();await say('Arre! The tag literally says don’t identify from the flower. Nice try though 😄',400);continue}
- done.add(id);W(id).style.display='none';
+ if(id==='sc_flower'){sfx.buzz();await me('Should we start with the flower?',50);await sp('No, no, no! The tag clearly said: do not identify from the flower. 😄',300);continue}
+ done.add(id);
  if(id==='sc_root')await scanRoot();else if(id==='sc_stem')await scanStem();else await scanLeaf();
+ W(id).style.display='none';
  xp(10);await camTo({x:450,y:860,s:.95},1800)}
 W('scanPts').innerHTML='';
-await say('Scan saved! Tap root, nodes, simple leaves. But how do her leaves sit on the stem? That’s the real clue.',300);
+await sp('Scan saved! Now the real clue: how are her leaves arranged on the stem?',150);
 /* GAME 2: spot the twin */
 camTag('MEMORISE');setCam({x:450,y:960,s:2.6});setOp('nodeMk',1);
-capShow('Watch how many leaves sit at each node.','10 SECONDS',false);
-await camTo({x:450,y:600,s:2.6},5200);setOp('nodeMk',0);camTag('');
-await say('Uh oh. W planted fakes to confuse us.',200);
+capShow('Count the leaves at each node.','10 SECONDS',null);
+await camTo({x:450,y:600,s:2.6},5400);setOp('nodeMk',0);camTag('');
+await sp('Uh oh. W has planted fakes, just to confuse us.',100);
+await me('W? Who is W?',100);
+await sp('No idea. First, find her twin!',100);
 const order=['alt','opp','wh'].sort(()=>Math.random()-.5);
 await showOv(twinSVG(order),700);
 let tries=0;
 while(true){await inst('Tap the plant that has HER leaf pattern.');const id=await waitTap(order.map(p=>'tw_'+p),'tw_alt');
  if(id==='tw_alt')break;tries++;W(id).classList.add('wilted');W(id).querySelector('.xmark').setAttribute('opacity',1);sfx.soft();
- await say(id==='tw_opp'?'Fake! That one has leaves in pairs. W, you sneaky…':'Fake! That one has a whole ring of leaves at each node.',200)}
+ if(id==='tw_opp')await sp('Fake! This one has two leaves at every node.',100);else await sp('Fake! This one has a whole ring of leaves.',100);
+ await me(tries>1?'Ugh, W!':'Hmm. One more try.',100)}
+await act('tw_alt','👆','#FFC857',700);actOff();
 lit('tw_alt',2400);sfx.unlock();confetti();xp(tries?15:30);
-await say(tries?`Got her twin, ${NM()}! Ekdum sahi.`:`First try, ${NM()}! Okay, I’m impressed.`,300);
+await me('Found her!',100);
+await sp(tries?`Absolutely right, ${NM()}!`:`First try! Very impressive, ${NM()}.`,200);
 const c=card('3 PATTERNS UNLOCKED','You beat W’s line-up',[{svg:I.alt,label:'Alternate',sub:'1 leaf per node',hl:1},{svg:I.opp,label:'Opposite',sub:'2 per node'},{svg:I.wh,label:'Whorled',sub:'3+ per node'}]);
-await say('Her pattern: alternate. One leaf per node, switching sides. The fakes were opposite and whorled.',1000);
+await sp('Her pattern is alternate. One leaf at each node, switching sides. The fakes were opposite and whorled.',900);
 await cardOff(c);await hideOv(600);
-if(S.found.p1a)await say('Remember the symbol on the base plate? One leaf, switching sides. It was the answer all along!',300);
+if(S.found.p1a){await me('Wait… the symbol on the base plate! It was the same thing!',100);await sp('Yes! The answer was right there from the start.',200)}
 await idBar(0,24);await wait(700);ui.innerHTML='';
 /* cliffhanger */
 await camTo({x:776,y:900,s:3},1600);termMsg(['NICE TRY.','YOU WILL NEVER','FIND HER NAME.','— W']);
-await wait(1800);
-await say(`W?! Who is W? ${NM()}, how are they watching us?`,600);
-await say('Okay. Her leaves told us how she grows. Her flowers might tell us who she is.',300);
+await wait(1600);
+await me('Tara… this message just came in!',100);
+await sp('Someone… is watching us.',300);
+await sp('Okay. Her leaves told us how she grows. Now her flowers will tell us who she is.',200);
 setCam({x:448,y:500,s:4,blur:12});capOff();
 const lk=lockShow(2);await wait(900);
 const a=await board(1,{k:'next',label:'Unlock Part 2'},{k:'again',label:'Replay Part 1'});
@@ -739,73 +860,84 @@ if(a==='next'){S.unlocked=Math.max(S.unlocked,2);save();cls(ui.querySelector('.s
 async function peel(){
 const L=['lyCal','lyCor','lyAnd','lyGyn'],LB=['lbCal','lbCor','lbAnd','lbGyn'];
 L.forEach(id=>{W(id).style.transform=`translate(450px,${LAY[id][0]}px)`;W(id).style.opacity=1});LB.forEach(i=>setOp(i,0));
-const q=[['lyCal','lbCal','LAYER 1: CALYX','Calyx! The green bodyguards that wrapped the bud.'],['lyCor','lbCor','LAYER 2: COROLLA','Corolla! The petals. Pure marketing for bees.'],['lyAnd','lbAnd','LAYER 3: ANDROECIUM','Androecium! The stamens, her pollen factory.'],['lyGyn','lbGyn','THE CORE: GYNOECIUM','The core! Gynoecium, the pistil. That swollen base is the ovary.']];
-for(let i=0;i<4;i++){const[id,lb,head,line]=q[i];
- if(i<3){await inst(i?'Tap again. Peel the next layer!':'Tap the flower to peel its outer layer.');await waitTap(['flTap'],'flTap')}
+const q=[['lyCal','lbCal','CALYX','Calyx! The green sepals. Bodyguards of the bud.'],['lyCor','lbCor','COROLLA','Corolla, that means the petals. Pure marketing for the bees.'],['lyAnd','lbAnd','ANDROECIUM','Androecium. The stamens, her pollen factory.'],['lyGyn','lbGyn','GYNOECIUM','And in the centre, the gynoecium, the pistil. The swollen part at the bottom is the ovary.']];
+for(let i=0;i<4;i++){const[id,lb,tag,line]=q[i];
+ if(i<3){await inst(i?'Tap again. Peel the next layer!':'Tap the flower to peel its outer layer.');await waitTap(['flTap'],'flTap');await act(id,'🪡','#C9B6FF',500);actOff()}
  sfx.whoosh(.2);for(let j=0;j<=i;j++)W(L[j]).style.transform=`translate(450px,${LAY[L[j]][1]}px)`;
  if(i===2)W('lyGyn').style.transform=`translate(450px,${LAY.lyGyn[1]}px)`;
  L.forEach((x,j)=>W(x).style.opacity=j===i||i===3&&j===3?1:.35);setOp(lb,1);
- if(i>=2)arm('p2b',true);await wait(900);xp(5);
- await say(line,300,head)}
+ if(i>=2)arm('p2b',true);await wait(800);xp(5);
+ await sp(line,150,tag);
+ if(i===1)await me('Haha, true.',100)}
 arm('p2a',true);W('ovWall').setAttribute('opacity',.45);W('ovIn').setAttribute('opacity',1);sfx.swell();
-await say('Wait. Something’s glowing inside the ovary…',200);
+await me('Wait… something is glowing inside the ovary!',150);
 await huntPause('p2a',4200);W('ovWall').setAttribute('opacity',.95);W('ovIn').setAttribute('opacity',.08);arm('p2a',false);arm('p2b',false)}
 async function part2(cont){
-setHud(2);plantMode(2);amb({hum:.04,air:.05,bed:.04},2);termMsg(['NICE TRY.','YOU WILL NEVER','FIND HER NAME.','— W']);W('tmW').querySelectorAll('text');
+setHud(2);plantMode(2);actOff();amb({hum:.04,air:.05,bed:.04},2);termMsg(['NICE TRY.','YOU WILL NEVER','FIND HER NAME.','— W']);
 if(!cont){blackEl.style.transition='none';blackEl.style.opacity=1;setCam({x:448,y:500,s:4,blur:12});await wait(300);black(false,1400)}else blackEl.style.opacity=0;
 await wait(400);await camTo({x:442,y:500,s:3,blur:0},2600);setOp('ageG',0);
-await say('Her flowers! A whole cluster. But W locked them with a bloom code.',200);
-await say('To crack it, you need to know which flower bloomed first. Practice round!',200);
+await sp('Okay, here are her flowers. A whole cluster. But W has locked them with a bloom code.',150);
+await me('Bloom code? Meaning?',100);
+await sp('We have to tell which flower bloomed first. Let’s do a practice round.',150);
 /* GAME 3: bloom order */
 await showOv(abSVG(),700);
 W('axA').style.transitionDuration='7s';W('axA').style.strokeDashoffset=0;W('axB').style.strokeDashoffset=0;
 [970,880,790,700,615,535,460].forEach((y,i)=>setTimeout(()=>cls(W('fa'+i),'add'),(1060-y)/740*7000+300));
 setTimeout(()=>cls(W('apA'),'add'),7100);setTimeout(()=>cls(W('fb0'),'add'),2600);[1,2,3,4].forEach(i=>setTimeout(()=>cls(W('fb'+i),'add'),3000+i*900));
-capShow('Watch closely. Which flower pops up first on each plant?','WATCH',false);
+capShow('Watch closely. Which flower pops up first on each plant?','WATCH',null);
 await wait(8000);
 let tries=0;
-while(true){await inst('Plant A: tap the flower that bloomed FIRST.');const id=await waitTap(['fa0','fa1','fa2','fa3','fa4','fa5','fa6'],'fa0');if(id==='fa0')break;tries++;sfx.soft();await say('That one’s a baby! Plant A started blooming from somewhere else…',100)}
-sfx.unlock();xp(tries?8:15);
+while(true){await inst('Plant A: tap the flower that bloomed FIRST.');const id=await waitTap(['fa0','fa1','fa2','fa3','fa4','fa5','fa6'],'fa0');if(id==='fa0')break;tries++;sfx.soft();await sp('That one is a baby! Plant A started somewhere else.',100)}
+await act('fa0','👆','#FFC857',500);actOff();sfx.unlock();xp(tries?8:15);await me('The bottom one!',100);
 tries=0;
-while(true){await inst('Plant B: tap the flower that bloomed FIRST.');const id=await waitTap(['fb0','fb1','fb2','fb3','fb4'],'fb0');if(id==='fb0')break;tries++;sfx.soft();await say('Nope, younger one. Where did Plant B’s first flower appear?',100)}
-sfx.unlock();xp(tries?8:15);confetti(18);
+while(true){await inst('Plant B: tap the flower that bloomed FIRST.');const id=await waitTap(['fb0','fb1','fb2','fb3','fb4'],'fb0');if(id==='fb0')break;tries++;sfx.soft();await sp('No, that one is new. Where did Plant B show its first flower?',100)}
+await act('fb0','👆','#FFC857',500);actOff();sfx.unlock();xp(tries?8:15);confetti(18);await me('And here, the top one!',100);
 setOp('abLab',1);setOp('abAge',1);
-await say(`Code cracked, ${NM()}! Plant A keeps growing upward, oldest at the bottom: racemose.`,200,'RACEMOSE');
-await say('Plant B ends in a flower, oldest at the top: cymose.',500,'CYMOSE');
+await sp(`Code cracked, ${NM()}! Plant A keeps growing upwards, so its oldest flower is at the bottom. Racemose.`,150,'RACEMOSE');
+await sp('Plant B ends in a flower, so its oldest flower is on top. Cymose.',150,'CYMOSE');
+await me('Got it. Now her code?',200);
 await hideOv(600);
 await camTo({x:442,y:500,s:3.2},1200);
 tries=0;
-while(true){await inst('Now HER code. Tap her oldest flower.');const id=await waitTap(['cf1','cf2','cf3','cf4'],'cf1');if(id==='cf1')break;tries++;sfx.soft();await say('Hmm, that one’s still young. Which one is fully open?',100)}
+while(true){await inst('Tap her oldest flower.');const id=await waitTap(['cf1','cf2','cf3','cf4'],'cf1');if(id==='cf1')break;tries++;sfx.soft();await sp('Hmm, that one is still young. Which one is fully open?',100)}
+await act('cf1','👆','#FFC857',500);actOff();
 setOp('ageG',1);sfx.unlock();confetti();xp(tries?10:20);
 tLine('BLOOM CODE CRACKED: CYMOSE','t-mid gold');await wait(1700);await tClear(400);setOp('ageG',0);
+await me('She is cymose!',100);
 /* GAME 4: peel the flower */
 sfx.whoosh(.45);await camTo({x:451,y:430,s:13,blur:4},1800);
 await showOv(flowerSVG(),700);setCam({blur:0});
-await say('Whoa. Her flower isn’t just a flower. It’s a four-layer lock!',200);
+await sp('Oh! This is not just a flower. It is a four-layer lock!',100);
+await me('Then let’s open it, layer by layer.',150);
 await peel();
 /* GAME 5: laser memory */
-await say('W hid something inside that ovary. Let’s slice it with the laser. Careful: it fires only once!',200);
+await sp('W has hidden something inside. Let’s slice it with the laser. But careful, the laser will fire only once!',100);
+await me('Only once? No pressure, okay?',150);
 await buttons([{k:'fire',label:'🔦 Fire the laser'}]);
+await act('lyGyn','🔦','#FF3B5C',600);actOff();
 ov.insertAdjacentHTML('beforeend','<rect id="laser" x="0" y="0" width="900" height="10" fill="#FF3B5C" style="transform:translateY(300px);transition:transform 1s linear" filter="url(#glowF)"/>');
 W('laser').getBoundingClientRect();W('laser').style.transform='translateY(820px)';noiseHit(1,1200,4000,.25);await wait(1100);
 ov.style.transition='none';ov.innerHTML=sliceSVG();ov.style.opacity=1;sfx.click();await wait(2300);
 stage.classList.add('glitch');sfx.glitch();await wait(500);stage.classList.remove('glitch');ov.innerHTML='';ov.style.transition='';
-tLine('LASER OVERHEATED!','t-mid');await wait(1200);await tClear(300);
+await sp('Oh no, the laser has overheated!',100);
+await me('No problem, I saw it… I think.',150);
 const flash=async()=>{ov.style.transition='none';ov.innerHTML=sliceSVG();ov.style.opacity=1;await new Promise(r=>setTimeout(r,1600));ov.style.opacity=0;ov.style.transition=''};
 tries=await choose('WHAT DID THE LASER SHOW?','Where were the ovules?',[{k:'A',label:'Along one edge',icon:I.pA},{k:'B',label:'Around a central axis',icon:I.pB},{k:'C',label:'At the base',icon:I.pC}],'B',flash);
 ov.innerHTML='';xp(tries?15:30);confetti();
 const c=card('PLACENTATION UNLOCKED','How ovules sit inside an ovary',[{svg:I.pA,label:'Marginal',sub:'one edge. Pea'},{svg:I.pB,label:'Axile',sub:'central axis. Tomato, lemon',hl:1},{svg:I.pC,label:'Basal',sub:'at the base. Sunflower'}]);
-await say(`${NM()}, memory like a hard disk! Her ovules sit around a central axis. That’s axile.`,1000);
+await sp(`${NM()}, your memory is like a hard disk! The ovules sit around a central axis. That is called axile.`,900);
 await cardOff(c);
 setCam({x:450,y:820,s:1.2,blur:0});
 await idBar(24,61);await wait(800);ui.innerHTML='';
 /* W strikes */
-await camTo({x:776,y:900,s:3},1400);termMsg(['TOO CLOSE.','GOODBYE,','SPECIMEN 07.','— W']);await wait(1500);
-await camTo({x:450,y:820,s:1.2},1000);
+await camTo({x:776,y:900,s:3},1400);termMsg(['TOO CLOSE.','GOODBYE,','SPECIMEN 07.','— W']);await wait(1200);
+await me('Tara… another message on the screen!',50);
+await sp('Goodbye? No, no, no—',50);
+await camTo({x:450,y:820,s:1.2},800);
 stage.classList.add('glitch');sfx.glitch();await wait(800);blackEl.style.transition='none';blackEl.style.opacity=1;stage.classList.remove('glitch');amb({hum:0,air:0,bed:0},.3);
 await wait(800);
-await say('No no no no… she’s gone!',700);
-await say(`Wait. WAIT. ${NM()}, I backed up everything you found…`,600);capOff();
+await me('She… she is gone!',500);
+await sp(`Wait. Wait! ${NM()}, I saved every clue you found on my tablet…`,400);capOff();
 blackEl.style.transition='opacity 1s';blackEl.style.opacity=.45;amb({bed:.04},2);
 const lk=lockShow(3);await wait(900);
 const a=await board(2,{k:'next',label:'Unlock Part 3'},{k:'again',label:'Replay Part 2'});
@@ -814,65 +946,77 @@ if(a==='next'){S.unlocked=Math.max(S.unlocked,3);save();cls(ui.querySelector('.s
 /* ================= PART 3: THE IDENTITY ================= */
 function idMachine(){const m=el('div','machine',`<h3>IDENTITY MACHINE</h3><div class="chips"><span>Tap root</span><span>Alternate</span><span>Cymose</span><span>Axile</span><span>Berry</span></div><div class="mscreen"><div class="spin">READY</div><div class="log"></div></div>`);ui.appendChild(m);onNext(m);return m}
 async function part3(){
-setHud(3);plantMode(3);hud.classList.remove('on');termMsg(['TOO CLOSE.','GOODBYE,','SPECIMEN 07.','— W']);
+setHud(3);plantMode(3);actOff();hud.classList.remove('on');termMsg(['TOO CLOSE.','GOODBYE,','SPECIMEN 07.','— W']);
 const parts=['rootG','stemG','leavesG','inflG','fruitG'];parts.forEach(i=>{W(i).style.transition='none';W(i).style.opacity=0});
 blackEl.style.transition='none';blackEl.style.opacity=1;setCam({x:450,y:860,s:.95,blur:0});
 amb({hum:0,air:0,bed:0},1);await wait(1000);
-heart(true);await say('Backup loading… 3… 2… 1…',600);
+heart(true);await sp('Loading the backup… three… two… one…',400);
+await me('Anything?',200);
 black(false,1600);await wait(1700);hud.classList.add('on');heart(false);amb({bed:.05,air:.04},2);
-await say(`${NM()}, the backup is built from your clues. Help me rebuild her, piece by piece!`,200);
+await sp(`${NM()}, this backup is built from your clues. Let’s rebuild her together, piece by piece!`,150);
 /* GAME 6: rebuild */
-const R=[[['rootG'],{x:450,y:1110,s:1.5},'Her roots are missing!','root'],[['stemG','leavesG'],{x:450,y:760,s:1.15},'No stem, no leaves!','alt'],[['inflG'],{x:445,y:470,s:2.2},'Her flowers are missing!','cy'],[['fruitG'],{x:520,y:740,s:2.6},'Something grew from her ovary… rebuild it!','ax']];
+const R=[[['rootG'],{x:450,y:1110,s:1.5},'Her roots are missing!','root','Roots are back!'],[['stemG','leavesG'],{x:450,y:760,s:1.15},'No stem, no leaves!','alt','Stem and leaves, done!'],[['inflG'],{x:445,y:470,s:2.2},'Her flowers are missing!','cy','Flowers are back!'],[['fruitG'],{x:520,y:740,s:2.6},'Something grew from her ovary… rebuild it!','ax','Oh, it is a fruit!']];
 const ALL=[{k:'root',label:'Tap root',icon:I.root},{k:'alt',label:'Alternate leaves',icon:I.alt},{k:'cy',label:'Cymose flowers',icon:I.cy},{k:'ax',label:'Axile ovary',icon:I.pB}];
-for(let i=0;i<R.length;i++){const[ids,cv,line,key]=R[i];ids.forEach(x=>{W(x).style.transition='opacity .6s';W(x).style.opacity=.14});
- await camTo(cv,1500);await say(line,100);
+for(let i=0;i<R.length;i++){const[ids,cv,line,key,yay]=R[i];ids.forEach(x=>{W(x).style.transition='opacity .6s';W(x).style.opacity=.14});
+ await camTo(cv,1500);await sp(line,50);
  const t=await choose(`REBUILD ${i+1}/4`,'Which piece of evidence fixes this?',[...ALL].sort(()=>Math.random()-.5),key);
- ids.forEach(x=>{W(x).style.transition='opacity 1.2s';W(x).style.opacity=1});lit(ids[ids.length-1],1800);sfx.chime();xp(t?5:10);await wait(900)}
+ await act(ids[ids.length-1],'✨','#5BF0B0',500);actOff();
+ ids.forEach(x=>{W(x).style.transition='opacity 1.2s';W(x).style.opacity=1});lit(ids[ids.length-1],1800);sfx.chime();xp(t?5:10);await me(yay,100)}
 await camTo({x:450,y:860,s:.95},1800);confetti();
-await say('She’s back! Every part rebuilt from your clues.',300);
+await sp('She is back!',50);await me('Yesss!',200);
 /* fruit + hidden calyx */
 arm('p3a',true);await camTo({x:520,y:738,s:4.2},1800);
-await say('And look, she grew a fruit. A berry! Something from her flower is still hanging on…',200,'FRUIT');
+await sp('And look, a fruit also! A berry. Something from the flower is still stuck to it…',150,'FRUIT');
 await huntPause('p3a',4500);
+await me('Come, let’s cut it and see what is inside.',100);
 await buttons([{k:'cut',label:'✂ Cut the fruit open'}]);arm('p3a',false);
+await act('fruitG','✂️','#FF8FB1',500);actOff();
 noiseHit(.4,3000,800,.3);await showOv(berrySVG(),600);arm('p3b',true);
 const t=await choose('QUICK! WHERE DID THE OVULES GO?','Look inside the fruit',[{k:'A',label:'They became petals',icon:I.petal},{k:'B',label:'They became seeds',icon:I.seed},{k:'C',label:'They became roots',icon:I.root}],'B');
 xp(t?5:10);
-await say('Seeds! Sitting exactly where the ovules were. The ovary became the fruit.',200,'SEED');
+await sp('Seeds! Exactly where the ovules were. The ovary became the fruit.',150,'SEED');
 await huntPause('p3b',3500);arm('p3b',false);
 ov.style.opacity=0;await wait(400);ov.innerHTML=seedSVG();ov.style.opacity=1;await wait(500);
-await say('And inside every seed? A baby plant, curled up, already pointing its first root down. Cute.',500,'SEED');
+await sp('And inside every seed is a baby plant, curled up, with its first root already pointing down.',150,'SEED');
+await me('Aww. So cute.',300);
 await hideOv(500);
 /* GAME 7: identity machine */
 await camTo({x:450,y:900,s:.9},1500);
-await say(`Okay ${NM()}. Time to feed everything into the Identity Machine.`,100);
+await sp(`Okay ${NM()}. Now let’s feed all the clues into the Identity Machine.`,100);
+await me('Let’s do it!',100);
 const m=idMachine();
 await buttons([{k:'go',label:'⚡ IDENTIFY HER'}]);
-const sp=m.querySelector('.spin'),log=m.querySelector('.log');
+await act(m,'⚡','#FFC857',500);actOff();
+const spn=m.querySelector('.spin'),log=m.querySelector('.log');
 const fams=['Fabaceae','Liliaceae','Brassicaceae','Solanaceae','Malvaceae','Poaceae'];
-const spin=async(stop,ms)=>{const t0=performance.now();let i=0;while(performance.now()-t0<ms){sp.textContent=fams[i++%fams.length];sfx.tick();await wait(80)}sp.textContent=stop};
+const spin=async(stop,ms)=>{const t0=performance.now();let i=0;while(performance.now()-t0<ms){spn.textContent=fams[i++%fams.length];sfx.tick();await wait(80)}spn.textContent=stop};
 await spin('Fabaceae?',1300);log.insertAdjacentHTML('beforeend','<div class="no">✕ Fabaceae (pea family)</div><small>ovules along one edge. Not her.</small>');sfx.soft();await wait(1200);
 await spin('Liliaceae?',1100);log.insertAdjacentHTML('beforeend','<div class="no">✕ Liliaceae (lily family)</div><small>parallel veins, flower parts in threes. Not her.</small>');sfx.soft();await wait(1200);
 await spin('Solanaceae!',1500);log.insertAdjacentHTML('beforeend','<div class="yes">✓ SOLANACEAE (potato family)</div><small>every single clue matches.</small>');sfx.unlock();confetti(36);
-await say('Solanaceae! Same family as potato, tomato and brinjal.',900);
+await sp('Solanaceae! The same family as potato, tomato and brinjal!',150);
+await me('What?! She is a cousin of the potato?!',100);
+await sp('Haha, yes!',500);
 m.classList.remove('on');await wait(400);m.remove();
 await idBar(61,100);await wait(500);ui.innerHTML='';
 /* the lab heals */
 await camTo({x:450,y:880,s:.78},1800);
-await say('Her name is back in the system. And look… something’s happening.',200);
+await sp('Her name is back in the system. And look… something is happening.',100);
 const sw=$('#sweep');sw.classList.remove('go');sw.getBoundingClientRect();sw.classList.add('go');
 world.classList.add('healed');termMsg(null);
 [0,400,800,1200,1600].forEach((d,i)=>setTimeout(()=>tone(523.25*Math.pow(1.26,i%4),1.2,'sine',.05,0,.8),d));confetti(40);
-await wait(2600);
-await say(`The whole lab is coming back to life! ${NM()}, you didn’t just name her. You saved everyone.`,800);
+await wait(2400);
+await me('Tara… all the plants…!',150);
+await sp(`The whole lab is coming back to life! ${NM()}, you did not just find her name. You saved everyone.`,600);
 xp(50);
 /* W returns */
-await camTo({x:776,y:900,s:3},1500);termMsg(['LUCKY.','213 MORE','ARE HIDDEN.','— W']);await wait(1600);
-await say(`213 more?! ${NM()}… you in?`,600);
+await camTo({x:776,y:900,s:3},1500);termMsg(['LUCKY.','213 MORE','ARE HIDDEN.','— W']);await wait(1500);
+await me('213 more?!',150);
+await sp(`${NM()}… are you ready?`,150);
+await me('Always.',500);
 await finale()}
 async function finale(){
-capOff();await black(true,900);hud.classList.remove('on');amb({bed:.06},1);
-tLine('CASE 07: CLOSED','t-big gold');sfx.unlock();await wait(700);tLine(`Solved by ${S.name||'Detective'}`,'t-mid');await wait(1000);
+capOff();actOff();await black(true,900);hud.classList.remove('on');amb({bed:.06},1);
+tLine('CASE 07: CLOSED','t-big gold');sfx.unlock();await wait(700);tLine(`Solved by ${S.name||'Detective'} and Sprout`,'t-mid');await wait(1000);
 tLine(`Rank: ${rank()} ⚡ ${S.xp} XP`,'t-sub');await wait(2000);
 tLine('Case file: Morphology of flowering plants','t-sub');await wait(2200);await tClear(500);
 tLine('YOUR NEXT SPECIMEN IS WAITING.','t-mid gold');await wait(2600);await tClear(500);
@@ -883,8 +1027,14 @@ if(a==='again')go(3);else{ui.innerHTML='';showHome()}}
 /* ---------- navigation ---------- */
 function go(n,cont=false){S.token++;resetAll();S.pass[n]=(S.pass[n]||0)+1;save();const f=n===1?part1:n===2?()=>part2(cont):part3;f().catch(e=>{if(e!==ABORT)console.error(e)})}
 function showHome(){S.token++;resetAll();hud.classList.remove('on');plantMode(1);setCam({x:450,y:760,s:1.05,blur:0});blackEl.style.opacity=0;
-$('#nm').value=S.name||'';const box=$('#parts');box.innerHTML='';$('#xpBtn').textContent=`⚡ ${S.xp}`;[1,2,3].forEach(n=>{const lockd=n>S.unlocked;const b=el('button','pbtn'+(n===1?' first':''),`<span><small>PART ${n}</small>${PARTNAMES[n]}</span><span>${lockd?'🔒':'▶'}</span>`);b.disabled=lockd;
-b.onclick=()=>{S.name=cleanName($('#nm').value);save();unlockAudio();$('#home').classList.add('off');sfx.click();go(n);setTimeout(()=>{if(!window.speechSynthesis||!speechSynthesis.getVoices().length)toast('Sprout’s voice isn’t available here','Captions will guide you. For voice, open the link in Chrome or Safari.',5500)},3000)};box.appendChild(b)});$('#home').classList.remove('off')}
+$('#nm').value=S.name||'';const cr=$('#chRow');if(S.char){cr.style.display='flex';cr.innerHTML=`<div class="pt">${portrait(ME())}</div><span><small>YOUR CHARACTER</small>${ME().role}</span><i>Change</i>`}else cr.style.display='none';cr.onclick=()=>{unlockAudio();openCharSel(()=>showHome())};const box=$('#parts');box.innerHTML='';$('#xpBtn').textContent=`⚡ ${S.xp}`;[1,2,3].forEach(n=>{const lockd=n>S.unlocked;const b=el('button','pbtn'+(n===1?' first':''),`<span><small>PART ${n}</small>${PARTNAMES[n]}</span><span>${lockd?'🔒':'▶'}</span>`);b.disabled=lockd;
+b.onclick=()=>{S.name=cleanName($('#nm').value);save();unlockAudio();sfx.click();const start=()=>{$('#home').classList.add('off');go(n)};if(!S.char)return openCharSel(start);start();setTimeout(()=>{if(!window.speechSynthesis||!speechSynthesis.getVoices().length)toast('Sprout’s voice isn’t available here','Captions will guide you. For voice, open the link in Chrome or Safari.',5500)},3000)};box.appendChild(b)});$('#home').classList.remove('off')}
+function openCharSel(done){const cs=$('#charsel'),g=$('#cgrid'),go_=$('#csGo');$('#csTara').innerHTML=portrait(TARA);g.innerHTML='';
+Object.keys(CHARS).forEach(k=>{const c=CHARS[k],b=el('button','cc'+(S.char===k?' sel':''),`<div class="pt">${portrait(c)}</div><b>${c.role}</b><span>${c.vibe}</span>`);
+b.onclick=()=>{S.char=k;save();pickVoices();g.querySelectorAll('.cc').forEach(x=>x.classList.remove('sel','talk'));b.classList.add('sel','talk');go_.disabled=false;sfx.click();
+if(window.speechSynthesis)speechSynthesis.cancel();speak(c.sample,'me').then(()=>b.classList.remove('talk'))};g.appendChild(b)});
+go_.disabled=!S.char;go_.onclick=()=>{if(!S.char)return;sfx.unlock();cs.classList.remove('on');if(window.speechSynthesis)speechSynthesis.cancel();done()};cs.classList.add('on');
+setTimeout(()=>{const tp=$('.cs-top');tp.classList.add('talk');speak('Hi, I am Tara, the junior botanist here. I need a partner. Who are you?','sp').then(()=>tp.classList.remove('talk'))},300)}
 $('#menuBtn').onclick=()=>{if(ui.querySelector('.menu'))return;sfx.click();capOff();const n=S.part,m=el('div','sheet menu',`<div class="bh">Menu</div>`);const st=el('div','bstack');
 const add=(label,fn,ghost)=>{const b=el('button','btn'+(ghost?' ghost':''),label);b.onclick=()=>{m.remove();fn()};st.appendChild(b)};
 add('↻ Restart Part '+n,()=>go(n));if(n<3)add('⏭ Skip to Part '+(n+1),()=>{S.unlocked=Math.max(S.unlocked,n+1);save();go(n+1)});
